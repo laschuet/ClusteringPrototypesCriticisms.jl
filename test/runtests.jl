@@ -17,4 +17,9 @@ using Test
         @test witness(x, X, Y) > 0
         @test witness(y, X, Y) < 0
     end
+
+    @testset "prototypes" begin
+        X = [1 2 4 5; 1 1 1 1]
+        @test length(prototypes(X, 0)) == 0
+    end
 end
