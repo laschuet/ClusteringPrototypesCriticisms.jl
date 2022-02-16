@@ -1,0 +1,7 @@
+name = "PrototypesCriticisms"
+uuid = "cfc89999-06ed-4619-a55b-1db31ff72b01"
+authors = ["Lars Schütz"]
+version = "0.1.0"
+
+[compat]
+julia = "1.7"

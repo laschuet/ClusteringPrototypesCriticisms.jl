@@ -1,0 +1,3 @@
+module PrototypesCriticisms
+
+end # module
