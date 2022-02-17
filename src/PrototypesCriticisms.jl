@@ -3,7 +3,8 @@ module PrototypesCriticisms
 using KernelFunctions
 using Statistics
 
-export prototypes,
+export criticisms,
+        prototypes,
         sqmmd, mmd²,
         witness
 
@@ -36,5 +37,20 @@ end
 """
 """
 witness(z, X, Y, k=RBFKernel()) = mean(map(x -> k(z, x), eachcol(X))) - mean(map(y -> k(z, y), eachcol(Y)))
+
+"""
+"""
+function criticisms(X, protoids, n, k=RBFKernel())
+    critids = []
+    while length(critids) < n
+        absws = []
+        for i in setdiff(1:size(X, 2), union(critids, protoids))
+            w = abs(witness(view(X, :, i), X, view(X, :, protoids)))
+            push!(absws, (abs(w), i))
+        end
+        push!(critids, absws[argmax(absws)][2])
+    end
+    return critids
+end
 
 end # module

@@ -23,4 +23,10 @@ using Test
         @test length(prototypes(X, 0)) == 0
         @test Set(prototypes(X, 10)) == Set(1:10)
     end
+
+    @testset "criticisms" begin
+        X = rand(5, 10)
+        @test length(criticisms(X, [1, 2], 0)) == 0
+        @test Set(criticisms(X, [1, 2], 8)) == Set(3:10)
+    end
 end
