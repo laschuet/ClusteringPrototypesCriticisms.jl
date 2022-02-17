@@ -9,3 +9,11 @@
 [codecov-url]: https://codecov.io/gh/laschuet/PrototypesCriticisms.jl
 
 A Julia package for computing prototypes and criticisms.
+
+## Installation
+
+The package has not been registered yet.
+
+```julia
+] add https://github.com/laschuet/PrototypesCriticisms.jl
+```
