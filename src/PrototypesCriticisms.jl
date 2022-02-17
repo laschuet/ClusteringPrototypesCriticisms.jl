@@ -15,7 +15,7 @@ const mmd² = sqmmd
 
 """
 """
-function prototypes(X, n)
+function prototypes(X, n, k=RBFKernel())
     protoids = []
     while length(protoids) < n
         fs = []
@@ -23,9 +23,9 @@ function prototypes(X, n)
             P2 = view(X, :, [protoids; i])
             P1 = view(X, :, protoids)
             if length(protoids) > 0
-                f = sqmmd(X, P2) - sqmmd(X, P1)
+                f = sqmmd(X, P2, k) - sqmmd(X, P1, k)
             else
-                f = sqmmd(X, P2)
+                f = sqmmd(X, P2, k)
             end
             push!(fs, (f, i))
         end
@@ -45,7 +45,7 @@ function criticisms(X, protoids, n, k=RBFKernel())
     while length(critids) < n
         absws = []
         for i in setdiff(1:size(X, 2), union(critids, protoids))
-            w = abs(witness(view(X, :, i), X, view(X, :, protoids)))
+            w = abs(witness(view(X, :, i), X, view(X, :, protoids), k))
             push!(absws, (abs(w), i))
         end
         push!(critids, absws[argmax(absws)][2])
