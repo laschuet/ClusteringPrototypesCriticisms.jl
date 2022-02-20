@@ -1,5 +1,6 @@
 module PrototypesCriticisms
 
+using Clustering
 using KernelFunctions
 using Statistics
 
@@ -33,6 +34,10 @@ function prototypes(X, n, k=RBFKernel())
     end
     return protoids
 end
+
+"""
+"""
+prototypes(c::KmedoidsResult) = c.medoids
 
 """
 """

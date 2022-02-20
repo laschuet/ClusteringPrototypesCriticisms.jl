@@ -1,4 +1,6 @@
 using PrototypesCriticisms
+using Clustering
+using Distances
 using Test
 
 @testset verbose=true "PrototypesCriticisms.jl" begin
@@ -20,8 +22,15 @@ using Test
 
     @testset "prototypes" begin
         X = rand(5, 10)
+
         @test length(prototypes(X, 0)) == 0
         @test Set(prototypes(X, 10)) == Set(1:10)
+
+        k = 2
+        c = kmedoids(pairwise(Euclidean(), X, dims=2), k)
+        protoids = prototypes(c)
+        @test length(protoids) == k
+        @test protoids == c.medoids
     end
 
     @testset "criticisms" begin
