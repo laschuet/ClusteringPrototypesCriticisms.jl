@@ -47,7 +47,7 @@ function prototypes(c::KmeansResult)
     for i = 1:length(ys)
         push!(clustercosts[ys[i]], (c.costs[i], i))
     end
-    return map(t -> t[2], minimum.(clustercosts))
+    return map(instancecosts -> instancecosts[2], minimum.(clustercosts))
 end
 
 """
