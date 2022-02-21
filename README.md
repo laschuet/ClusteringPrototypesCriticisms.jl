@@ -8,7 +8,16 @@
 [codecov-img]: https://codecov.io/gh/laschuet/PrototypesCriticisms.jl/branch/main/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/laschuet/PrototypesCriticisms.jl
 
-A Julia package for computing prototypes and criticisms.
+A Julia package for computing prototypes and criticisms. In particular, we
+support the selection of prototypes and criticisms with the following methods:
+
+|                             | Prototypes | Criticisms |
+|-----------------------------|-----------:|-----------:|
+| [MMD-critic][mmdcritic-url] | ✓          | ✓          |
+| k-medoids                   | ✓          |            |
+| k-means                     | ✓          |            |
+
+[mmdcritic-url]: https://dl.acm.org/doi/10.5555/3157096.3157352
 
 ## Installation
 
