@@ -31,6 +31,11 @@ using Test
         protoids = prototypes(c)
         @test length(protoids) == k
         @test protoids == c.medoids
+
+        k = 3
+        c = kmeans(X, k)
+        protoids = prototypes(c)
+        @test length(protoids) == k
     end
 
     @testset "criticisms" begin
