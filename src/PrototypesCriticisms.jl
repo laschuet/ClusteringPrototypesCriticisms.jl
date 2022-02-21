@@ -11,12 +11,12 @@ export criticisms,
 
 """
 """
-sqmmd(X, Y, k=RBFKernel()) = mean(kernelmatrix(k, X, obsdim=2)) - 2 * mean(kernelmatrix(k, X, Y, obsdim=2)) + mean(kernelmatrix(k, Y, obsdim=2))
+sqmmd(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k=RBFKernel()) = mean(kernelmatrix(k, X, obsdim=2)) - 2 * mean(kernelmatrix(k, X, Y, obsdim=2)) + mean(kernelmatrix(k, Y, obsdim=2))
 const mmd² = sqmmd
 
 """
 """
-function prototypes(X, n, k=RBFKernel())
+function prototypes(X::AbstractMatrix{<:Real}, n::Int, k=RBFKernel())
     protoids = []
     while length(protoids) < n
         fs = []
@@ -52,11 +52,11 @@ end
 
 """
 """
-witness(z, X, Y, k=RBFKernel()) = mean(map(x -> k(z, x), eachcol(X))) - mean(map(y -> k(z, y), eachcol(Y)))
+witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k=RBFKernel()) = mean(map(x -> k(z, x), eachcol(X))) - mean(map(y -> k(z, y), eachcol(Y)))
 
 """
 """
-function criticisms(X, protoids, n, k=RBFKernel())
+function criticisms(X::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n::Int, k=RBFKernel())
     critids = []
     while length(critids) < n
         absws = []
