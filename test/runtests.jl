@@ -40,7 +40,13 @@ using Test
 
     @testset "criticisms" begin
         X = rand(5, 10)
+
         @test length(criticisms(X, [1, 2], 0)) == 0
         @test Set(criticisms(X, [1, 2], 8)) == Set(3:10)
+
+        k = 3
+        c = kmeans(X, k)
+        critids = criticisms(c)
+        @test length(critids) == k
     end
 end

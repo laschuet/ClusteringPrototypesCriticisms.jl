@@ -69,4 +69,15 @@ function criticisms(X, protoids, n, k=RBFKernel())
     return critids
 end
 
+"""
+"""
+function criticisms(c::KmeansResult)
+    clustercosts = [[] for _ = 1:nclusters(c)]
+    ys = assignments(c)
+    for i = 1:length(ys)
+        push!(clustercosts[ys[i]], (c.costs[i], i))
+    end
+    return map(instancecosts -> instancecosts[2], maximum.(clustercosts))
+end
+
 end # module

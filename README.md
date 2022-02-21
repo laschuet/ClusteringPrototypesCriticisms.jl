@@ -15,7 +15,7 @@ support the selection of prototypes and criticisms with the following methods:
 |-----------------------------|-----------:|-----------:|
 | [MMD-critic][mmdcritic-url] | ✓          | ✓          |
 | k-medoids                   | ✓          |            |
-| k-means                     | ✓          |            |
+| k-means                     | ✓          | ✓          |
 
 [mmdcritic-url]: https://dl.acm.org/doi/10.5555/3157096.3157352
 
