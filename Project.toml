@@ -9,5 +9,6 @@ KernelFunctions = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
-julia = "1.7"
+Clustering = "0.14"
 KernelFunctions = "0.10"
+julia = "1.7"
