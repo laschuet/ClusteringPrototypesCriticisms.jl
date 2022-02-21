@@ -10,11 +10,13 @@ export criticisms,
         witness
 
 """
+    sqmmd(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel())
 """
 sqmmd(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel()) = mean(kernelmatrix(k, X, obsdim=2)) - 2 * mean(kernelmatrix(k, X, Y, obsdim=2)) + mean(kernelmatrix(k, Y, obsdim=2))
 const mmd² = sqmmd
 
 """
+    prototypes(X::AbstractMatrix{<:Real}, n::Int, k::Kernel=RBFKernel())
 """
 function prototypes(X::AbstractMatrix{<:Real}, n::Int, k::Kernel=RBFKernel())
     protoids = []
@@ -36,10 +38,12 @@ function prototypes(X::AbstractMatrix{<:Real}, n::Int, k::Kernel=RBFKernel())
 end
 
 """
+    prototypes(c::KmedoidsResult)
 """
 prototypes(c::KmedoidsResult) = c.medoids
 
 """
+    prototypes(c::KmeansResult)
 """
 function prototypes(c::KmeansResult)
     clustercosts = [[] for _ = 1:nclusters(c)]
@@ -51,10 +55,12 @@ function prototypes(c::KmeansResult)
 end
 
 """
+    witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel())
 """
 witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel()) = mean(map(x -> k(z, x), eachcol(X))) - mean(map(y -> k(z, y), eachcol(Y)))
 
 """
+    criticisms(X::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n::Int, k::Kernel=RBFKernel())
 """
 function criticisms(X::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n::Int, k::Kernel=RBFKernel())
     critids = []
@@ -70,6 +76,7 @@ function criticisms(X::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n:
 end
 
 """
+    criticisms(c::KmeansResult)
 """
 function criticisms(c::KmeansResult)
     clustercosts = [[] for _ = 1:nclusters(c)]
