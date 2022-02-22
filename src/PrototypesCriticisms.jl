@@ -15,7 +15,7 @@ export criticisms,
 
 Compute the squared maximum mean discrepancy between `X` and `Y` using the kernel function `k`.
 
-`X`  ` and `Y` are expected to store observations in columns.
+`X` and `Y` are expected to store observations in columns.
 """
 sqmmd(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel()) = mean(kernelmatrix(k, X, obsdim=2)) - 2 * mean(kernelmatrix(k, X, Y, obsdim=2)) + mean(kernelmatrix(k, Y, obsdim=2))
 const mmd² = sqmmd
