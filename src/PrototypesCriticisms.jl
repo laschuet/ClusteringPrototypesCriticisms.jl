@@ -11,12 +11,21 @@ export criticisms,
 
 """
     sqmmd(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel())
+    mmd²(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel())
+
+    Compute the squared maximum mean discrepancy between `X` and `Y` using the kernel function `k`.
+
+    `X` and `Y` are expected to store observations in columns.
 """
 sqmmd(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel()) = mean(kernelmatrix(k, X, obsdim=2)) - 2 * mean(kernelmatrix(k, X, Y, obsdim=2)) + mean(kernelmatrix(k, Y, obsdim=2))
 const mmd² = sqmmd
 
 """
     prototypes(X::AbstractMatrix{<:Real}, n::Int, k::Kernel=RBFKernel())
+
+    Return the indices of `n` prototypes in `X` using the kernel function `k`.
+
+    `X` is expected to store observations in columns.
 """
 function prototypes(X::AbstractMatrix{<:Real}, n::Int, k::Kernel=RBFKernel())
     protoids = []
@@ -39,11 +48,19 @@ end
 
 """
     prototypes(c::KmedoidsResult)
+
+    Return the indices of the cluster prototypes.
+
+    One cluster contains exactly one prototype. The clustering `c` is the result of the k-medoids algorithm.
 """
 prototypes(c::KmedoidsResult) = c.medoids
 
 """
     prototypes(c::KmeansResult)
+
+    Return the indices of the cluster prototypes.
+
+    One cluster contains exactly one prototype. The clustering `c` is the result of the k-means algorithm.
 """
 function prototypes(c::KmeansResult)
     clustercosts = [[] for _ = 1:nclusters(c)]
@@ -56,11 +73,19 @@ end
 
 """
     witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel())
+
+    Compute the witness function of `X` and `Y` at `z` using the kernel function `k`.
+
+    `X` and `Y` are expected to store observations in columns, and `z` is a single observation.
 """
 witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel()) = mean(map(x -> k(z, x), eachcol(X))) - mean(map(y -> k(z, y), eachcol(Y)))
 
 """
     criticisms(X::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n::Int, k::Kernel=RBFKernel())
+
+    Return the indices of `n` criticisms in `X` using the prototype indices `protoids` and kernel function `k`.
+
+    `X` is expected to store observations in columns.
 """
 function criticisms(X::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n::Int, k::Kernel=RBFKernel())
     critids = []
@@ -77,6 +102,10 @@ end
 
 """
     criticisms(c::KmeansResult)
+
+    Return the indices of the cluster criticisms.
+
+    One cluster contains exactly one criticism. The clustering `c` is the result of the k-means algorithm.
 """
 function criticisms(c::KmeansResult)
     clustercosts = [[] for _ = 1:nclusters(c)]
