@@ -88,14 +88,17 @@ Return the indices of `n` criticisms in `X` using the prototype indices `protoid
 `X` is expected to store observations in columns.
 """
 function criticisms(X::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n::Int, k::Kernel=RBFKernel())
+    K = kernelmatrix(k, X, obsdim=2)
+    kernelmeans = mean(K, dims=1)
+    initialcandidates = setdiff(1:size(X, 2), protoids)
     critids = []
     while length(critids) < n
-        absws = []
-        for i in setdiff(1:size(X, 2), union(critids, protoids))
-            w = abs(witness(view(X, :, i), X, view(X, :, protoids), k))
-            push!(absws, (abs(w), i))
-        end
-        push!(critids, absws[argmax(absws)][2])
+        candidates = setdiff(initialcandidates, critids)
+        avgproximities1 = kernelmeans[candidates]
+        avgproximities2 = mean(K[protoids, candidates], dims=1)
+        absws = abs.(vec(avgproximities1) - vec(avgproximities2))
+        critid = candidates[argmax(absws)]
+        push!(critids, critid)
     end
     return critids
 end
