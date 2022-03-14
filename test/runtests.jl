@@ -11,7 +11,7 @@ using Test
     end
 
     @testset "witness" begin
-        X = rand(5, 10)
+        X = zeros(5, 10)
         Y = ones(5, 10)
         x = X[:, 1]
         y = Y[:, 1]
