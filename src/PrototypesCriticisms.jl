@@ -31,7 +31,7 @@ function prototypes(X::AbstractMatrix{<:Real}, n::Int, k::Kernel=RBFKernel())
     K = kernelmatrix(k, X, obsdim=2)
     doubledkernelmeans = 2 * mean(K, dims=1)
     initialcandidates = 1:size(X, 2)
-    protoids = []
+    protoids = Int[]
     while length(protoids) < n
         candidates = setdiff(initialcandidates, protoids)
         avgproximities1 = vec(doubledkernelmeans[candidates])
@@ -93,7 +93,7 @@ function criticisms(X::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n:
     K = kernelmatrix(k, X, obsdim=2)
     kernelmeans = mean(K, dims=1)
     initialcandidates = setdiff(1:size(X, 2), protoids)
-    critids = []
+    critids = Int[]
     while length(critids) < n
         candidates = setdiff(initialcandidates, critids)
         avgproximities1 = kernelmeans[candidates]
