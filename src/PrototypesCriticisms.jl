@@ -28,20 +28,22 @@ Return the indices of `n` prototypes in `X` using the kernel function `k`.
 `X` is expected to store observations in columns.
 """
 function prototypes(X::AbstractMatrix{<:Real}, n::Int, k::Kernel=RBFKernel())
+    K = kernelmatrix(k, X, obsdim=2)
+    doubledkernelmeans = 2 * mean(K, dims=1)
+    initialcandidates = 1:size(X, 2)
     protoids = []
     while length(protoids) < n
-        fs = []
-        for i in setdiff(1:size(X, 2), protoids)
-            P2 = view(X, :, [protoids; i])
-            P1 = view(X, :, protoids)
-            if length(protoids) > 0
-                f = sqmmd(X, P2, k) - sqmmd(X, P1, k)
-            else
-                f = sqmmd(X, P2, k)
-            end
-            push!(fs, (f, i))
+        candidates = setdiff(initialcandidates, protoids)
+        avgproximities1 = vec(doubledkernelmeans[candidates])
+        if length(protoids) > 0
+            proximities2 = vec(2 * sum(K[protoids, candidates], dims=1))
+            avgproximities2 = proximities2 / (length(protoids) + 1)
+            diffs = avgproximities1 - avgproximities2
+        else
+            diffs = avgproximities1
         end
-        push!(protoids, fs[argmin(fs)][2])
+        protoid = candidates[argmax(diffs)]
+        push!(protoids, protoid)
     end
     return protoids
 end
