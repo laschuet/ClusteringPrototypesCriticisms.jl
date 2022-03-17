@@ -11,6 +11,7 @@ deps/src/
 docs/build/
 docs/site/
 
-/Manifest.toml
+Manifest.toml
+!examples/Manifest.toml
 
 .vscode/
