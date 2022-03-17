@@ -29,4 +29,5 @@ function main()
     scatter!(protos[:, 1], protos[:, 2])
     scatter!(crits[:, 1], crits[:, 2])
     display(fig)
+    save("mmdcritic.pdf", fig)
 end
