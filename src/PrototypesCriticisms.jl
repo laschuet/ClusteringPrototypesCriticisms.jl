@@ -65,19 +65,17 @@ function prototypes(c::KmedoidsResult, n::Int=1)
 end
 
 """
-    prototypes(c::KmeansResult)
+    prototypes(c::KmeansResult, n::Int=1)
 
-Return the indices of the cluster prototypes.
-
-One cluster contains exactly one prototype. The clustering `c` is the result of the k-means algorithm.
+Return the indices of the `n` prototypes for every cluster of the k-means clustering `c`.
 """
-function prototypes(c::KmeansResult)
-    clustercosts = [[] for _ = 1:nclusters(c)]
+function prototypes(c::KmeansResult, n::Int=1)
+    clustercosts = repeat([[]], nclusters(c))
     ys = assignments(c)
     for i = 1:length(ys)
         push!(clustercosts[ys[i]], (c.costs[i], i))
     end
-    return map(instancecosts -> instancecosts[2], minimum.(clustercosts))
+    return map.(i -> i[2], partialsort!.(clustercosts, [1:n]))
 end
 
 """
