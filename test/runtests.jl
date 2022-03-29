@@ -37,7 +37,7 @@ using Test
         protoids = prototypes(c, 2)
         @test typeof(protoids) == Vector{Vector{Int}}
         @test length(protoids) == k
-        for i = 1: k
+        for i = 1:k
             @test length(protoids[1]) == 2
         end
 
