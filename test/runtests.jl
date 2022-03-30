@@ -41,7 +41,7 @@ using Test
             @test length(protoids[1]) == 2
         end
 
-        k = 3
+        k = 2
         c = kmeans(X, k)
         protoids = prototypes(c)
         @test typeof(protoids) == Vector{Vector{Int}}
@@ -63,9 +63,19 @@ using Test
         @test length(criticisms(X, [1, 2], 0)) == 0
         @test Set(criticisms(X, [1, 2], 8)) == Set(3:10)
 
-        k = 3
+        k = 2
         c = kmeans(X, k)
         critids = criticisms(c)
+        @test typeof(critids) == Vector{Vector{Int}}
         @test length(critids) == k
+        for i = 1:k
+            @test length(critids[i]) == 1
+        end
+        critids = criticisms(c, 2)
+        @test typeof(critids) == Vector{Vector{Int}}
+        @test length(critids) == k
+        for i = 1:k
+            @test length(critids[i]) == 2
+        end
     end
 end

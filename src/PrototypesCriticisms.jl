@@ -55,7 +55,7 @@ Return the indices of the `n` prototypes for every cluster of the k-medoids clus
 """
 function prototypes(c::KmedoidsResult, n::Int=1)
     n == 1 && return [[i] for i in c.medoids]
-    return _prototypes(nclusters(c), assignments(c), c.costs, n)
+    return _instances(nclusters(c), assignments(c), c.costs, n)
 end
 
 """
@@ -63,16 +63,7 @@ end
 
 Return the indices of the `n` prototypes for every cluster of the k-means clustering `c`.
 """
-prototypes(c::KmeansResult, n::Int=1) = _prototypes(nclusters(c), assignments(c), c.costs, n)
-
-# Return prototypes via the assignment costs
-function _prototypes(k::Int, assignments::Vector{Int}, costs::Vector{<:Real}, n::Int)
-    clustercosts = [[] for _ in 1:k]
-    for i = 1:length(assignments)
-        push!(clustercosts[assignments[i]], (costs[i], i))
-    end
-    return map.(i -> i[2], partialsort!.(clustercosts, [1:n]))
-end
+prototypes(c::KmeansResult, n::Int=1) = _instances(nclusters(c), assignments(c), c.costs, n)
 
 """
     witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel())
@@ -113,13 +104,15 @@ Return the indices of the cluster criticisms.
 
 One cluster contains exactly one criticism. The clustering `c` is the result of the k-means algorithm.
 """
-function criticisms(c::KmeansResult)
-    clustercosts = [[] for _ = 1:nclusters(c)]
-    ys = assignments(c)
-    for i = 1:length(ys)
-        push!(clustercosts[ys[i]], (c.costs[i], i))
+criticisms(c::KmeansResult, n::Int=1) = _instances(nclusters(c), assignments(c), c.costs, n, true)
+
+# Return instances via their assignment costs
+function _instances(k::Int, assignments::Vector{Int}, costs::Vector{<:Real}, n::Int, rev::Bool=false)
+    clustercosts = [[] for _ in 1:k]
+    for i = 1:length(assignments)
+        push!(clustercosts[assignments[i]], (costs[i], i))
     end
-    return map(instancecosts -> instancecosts[2], maximum.(clustercosts))
+    return map.(i -> i[2], partialsort!.(clustercosts, [1:n], rev=rev))
 end
 
 end # module
