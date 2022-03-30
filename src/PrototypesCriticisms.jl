@@ -98,11 +98,9 @@ function criticisms(X::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n:
 end
 
 """
-    criticisms(c::KmeansResult)
+    criticisms(c::KmeansResult, n::Int=1)
 
-Return the indices of the cluster criticisms.
-
-One cluster contains exactly one criticism. The clustering `c` is the result of the k-means algorithm.
+Return the indices of the `n` criticisms for every cluster of the k-means clustering `c`.
 """
 criticisms(c::KmeansResult, n::Int=1) = _instances(nclusters(c), assignments(c), c.costs, n, true)
 
