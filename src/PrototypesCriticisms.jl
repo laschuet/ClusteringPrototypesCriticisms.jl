@@ -55,13 +55,7 @@ Return the indices of the `n` prototypes for every cluster of the k-medoids clus
 """
 function prototypes(c::KmedoidsResult, n::Int=1)
     n == 1 && return [[i] for i in c.medoids]
-
-    clustercosts = [[] for _ in 1:nclusters(c)]
-    ys = assignments(c)
-    for i = 1:length(ys)
-        push!(clustercosts[ys[i]], (c.costs[i], i))
-    end
-    return map.(i -> i[2], partialsort!.(clustercosts, [1:n]))
+    return _prototypes(nclusters(c), assignments(c), c.costs, n)
 end
 
 """
@@ -69,11 +63,13 @@ end
 
 Return the indices of the `n` prototypes for every cluster of the k-means clustering `c`.
 """
-function prototypes(c::KmeansResult, n::Int=1)
-    clustercosts = [[] for _ in 1:nclusters(c)]
-    ys = assignments(c)
-    for i = 1:length(ys)
-        push!(clustercosts[ys[i]], (c.costs[i], i))
+prototypes(c::KmeansResult, n::Int=1) = _prototypes(nclusters(c), assignments(c), c.costs, n)
+
+# Return prototypes via the assignment costs
+function _prototypes(k::Int, assignments::Vector{Int}, costs::Vector{<:Real}, n::Int)
+    clustercosts = [[] for _ in 1:k]
+    for i = 1:length(assignments)
+        push!(clustercosts[assignments[i]], (costs[i], i))
     end
     return map.(i -> i[2], partialsort!.(clustercosts, [1:n]))
 end
