@@ -21,10 +21,11 @@ using Test
     end
 
     @testset "prototypes" begin
-        X = rand(5, 10)
+        n = 50
+        X = rand(5, n)
 
         @test length(prototypes(X, 0)) == 0
-        @test Set(prototypes(X, 10)) == Set(1:10)
+        @test Set(prototypes(X, n)) == Set(1:n)
 
         k = 2
         c = kmedoids(pairwise(Euclidean(), X, dims=2), k)
@@ -38,7 +39,7 @@ using Test
         @test typeof(protoids) == Vector{Vector{Int}}
         @test length(protoids) == k
         for i = 1:k
-            @test length(protoids[1]) == 2
+            @test length(protoids[i]) == 2
         end
 
         k = 2
@@ -47,21 +48,22 @@ using Test
         @test typeof(protoids) == Vector{Vector{Int}}
         @test length(protoids) == k
         for i = 1:k
-            @test length(protoids[1]) == 1
+            @test length(protoids[i]) == 1
         end
         protoids = prototypes(c, 2)
         @test typeof(protoids) == Vector{Vector{Int}}
         @test length(protoids) == k
         for i = 1:k
-            @test length(protoids[1]) == 2
+            @test length(protoids[i]) == 2
         end
     end
 
     @testset "criticisms" begin
-        X = rand(5, 10)
+        n = 50
+        X = rand(5, n)
 
         @test length(criticisms(X, [1, 2], 0)) == 0
-        @test Set(criticisms(X, [1, 2], 8)) == Set(3:10)
+        @test Set(criticisms(X, [1, 2], n - 2)) == Set(3:n)
 
         k = 2
         c = kmeans(X, k)
