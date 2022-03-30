@@ -66,6 +66,21 @@ using Test
         @test Set(criticisms(X, [1, 2], n - 2)) == Set(3:n)
 
         k = 2
+        c = kmedoids(pairwise(Euclidean(), X, dims=2), k)
+        critids = criticisms(c)
+        @test typeof(critids) == Vector{Vector{Int}}
+        @test length(critids) == k
+        for i = 1:k
+            @test length(critids[i]) == 1
+        end
+        critids = criticisms(c, 2)
+        @test typeof(critids) == Vector{Vector{Int}}
+        @test length(critids) == k
+        for i = 1:k
+            @test length(critids[i]) == 2
+        end
+
+        k = 2
         c = kmeans(X, k)
         critids = criticisms(c)
         @test typeof(critids) == Vector{Vector{Int}}

@@ -98,6 +98,13 @@ function criticisms(X::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n:
 end
 
 """
+    criticisms(c::KmedoidsResult, n::Int=1)
+
+Return the indices of the `n` criticisms for every cluster of the k-medoids clustering `c`.
+"""
+criticisms(c::KmedoidsResult, n::Int=1) = _instances(nclusters(c), assignments(c), c.costs, n, true)
+
+"""
     criticisms(c::KmeansResult, n::Int=1)
 
 Return the indices of the `n` criticisms for every cluster of the k-means clustering `c`.
