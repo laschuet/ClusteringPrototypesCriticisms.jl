@@ -70,15 +70,7 @@ prototypes(c::KmeansResult, n::Int=1) = _instances(nclusters(c), assignments(c),
 
 Return the indices of the `n` prototypes for every cluster of the fuzzy c-means clustering `c`.
 """
-function prototypes(c::FuzzyCMeansResult, n::Int=1)
-    W = c.weights
-    k = size(W, 2)
-    protoids = Vector{Vector{Int}}()
-    for i = 1:k
-        push!(protoids, partialsortperm(view(W, :, i), 1:n))
-    end
-    return protoids
-end
+prototypes(c::FuzzyCMeansResult, n::Int=1) = _instances(c.weights, n)
 
 """
     witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel())
@@ -133,6 +125,15 @@ function _instances(k::Int, assignments::Vector{Int}, costs::Vector{<:Real}, n::
         push!(clustercosts[assignments[i]], (costs[i], i))
     end
     return map.(i -> i[2], partialsort!.(clustercosts, [1:n], rev=rev))
+end
+
+# Return instances via their assignment weights
+function _instances(W::AbstractMatrix{<:Real}, n::Int=1, rev::Bool=false)
+    instances = Vector{Vector{Int}}()
+    for i = 1:size(W, 2)
+        push!(instances, partialsortperm(view(W, :, i), 1:n, rev=rev))
+    end
+    return instances
 end
 
 end # module
