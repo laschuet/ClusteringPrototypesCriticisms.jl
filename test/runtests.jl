@@ -56,6 +56,21 @@ using Test
         for i = 1:k
             @test length(protoids[i]) == 2
         end
+
+        k = 2
+        c = fuzzy_cmeans(X, k, 2)
+        protoids = prototypes(c)
+        @test typeof(protoids) == Vector{Vector{Int}}
+        @test length(protoids) == k
+        for i = 1:k
+            @test length(protoids[i]) == 1
+        end
+        protoids = prototypes(c, 2)
+        @test typeof(protoids) == Vector{Vector{Int}}
+        @test length(protoids) == k
+        for i = 1:k
+            @test length(protoids[i]) == 2
+        end
     end
 
     @testset "criticisms" begin

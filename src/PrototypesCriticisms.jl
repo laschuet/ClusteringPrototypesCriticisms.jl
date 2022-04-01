@@ -66,6 +66,21 @@ Return the indices of the `n` prototypes for every cluster of the k-means cluste
 prototypes(c::KmeansResult, n::Int=1) = _instances(nclusters(c), assignments(c), c.costs, n)
 
 """
+    prototypes(c::FuzzyCMeansResult, n::Int=1)
+
+Return the indices of the `n` prototypes for every cluster of the fuzzy c-means clustering `c`.
+"""
+function prototypes(c::FuzzyCMeansResult, n::Int=1)
+    W = c.weights
+    k = size(W, 2)
+    protoids = Vector{Vector{Int}}()
+    for i = 1:k
+        push!(protoids, partialsortperm(view(W, :, i), 1:n))
+    end
+    return protoids
+end
+
+"""
     witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel())
 
 Compute the witness function of `X` and `Y` at `z` using the kernel function `k`.
