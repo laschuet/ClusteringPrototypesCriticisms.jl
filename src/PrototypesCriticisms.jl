@@ -118,6 +118,13 @@ Return the indices of the `n` criticisms for every cluster of the k-means cluste
 """
 criticisms(c::KmeansResult, n::Int=1) = _instances(nclusters(c), assignments(c), c.costs, n, true)
 
+"""
+    criticisms(c::FuzzyCMeansResult, n::Int=1)
+
+Return the indices of the `n` criticisms for every cluster of the fuzzy c-means clustering `c`.
+"""
+criticisms(c::FuzzyCMeansResult, n::Int=1) = _instances(c.weights, n, true)
+
 # Return instances via their assignment costs
 function _instances(k::Int, assignments::Vector{Int}, costs::Vector{<:Real}, n::Int, rev::Bool=false)
     clustercosts = [[] for _ in 1:k]

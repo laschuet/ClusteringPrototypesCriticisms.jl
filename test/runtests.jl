@@ -109,5 +109,20 @@ using Test
         for i = 1:k
             @test length(critids[i]) == 2
         end
+
+        k = 2
+        c = fuzzy_cmeans(X, k, 2)
+        critids = criticisms(c)
+        @test typeof(critids) == Vector{Vector{Int}}
+        @test length(critids) == k
+        for i = 1:k
+            @test length(critids[i]) == 1
+        end
+        critids = criticisms(c, 2)
+        @test typeof(critids) == Vector{Vector{Int}}
+        @test length(critids) == k
+        for i = 1:k
+            @test length(critids[i]) == 2
+        end
     end
 end
