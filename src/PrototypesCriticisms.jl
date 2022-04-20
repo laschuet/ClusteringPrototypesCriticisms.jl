@@ -108,16 +108,25 @@ Compute the witness function of `X` and `Y` at `z` using the kernel function `k`
 witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel()) = mean(map(x -> k(z, x), eachcol(X))) - mean(map(y -> k(z, y), eachcol(Y)))
 
 """
-    criticisms(X::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n::Int, k::Kernel=RBFKernel())
+    criticisms(X::AbstractMatrix{<:Real}, k::Kernel, protoids::AbstractVector{Int}, n::Int)
 
 Return the indices of `n` criticisms in `X` using the prototype indices `protoids` and kernel function `k`.
 
 `X` is expected to store observations in columns.
 """
-function criticisms(X::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n::Int, k::Kernel=RBFKernel())
+function criticisms(X::AbstractMatrix{<:Real}, k::Kernel, protoids::AbstractVector{Int}, n::Int)
     K = kernelmatrix(k, X, obsdim=2)
+    return criticisms(K, protoids, n)
+end
+
+"""
+    criticisms(K::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n::Int)
+
+Return the indices of `n` criticisms using the prototype indices `indices` and the kernel matrix `K`.
+"""
+function criticisms(K::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n::Int)
     kernelmeans = mean(K, dims=1)
-    initialcandidates = setdiff(1:size(X, 2), protoids)
+    initialcandidates = setdiff(1:size(K, 2), protoids)
     critids = Int[]
     while length(critids) < n
         candidates = setdiff(initialcandidates, critids)

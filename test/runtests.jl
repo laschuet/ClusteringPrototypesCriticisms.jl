@@ -91,8 +91,12 @@ using Test
         n = 50
         X = rand(5, n)
 
-        @test length(criticisms(X, [1, 2], 0)) == 0
-        @test Set(criticisms(X, [1, 2], n - 2)) == Set(3:n)
+        @test length(criticisms(X, RBFKernel(), [1, 2], 0)) == 0
+        @test Set(criticisms(X, RBFKernel(), [1, 2], n - 2)) == Set(3:n)
+
+        K = kernelmatrix(RBFKernel(), X, obsdim=2)
+        @test length(criticisms(K, [1, 2], 0)) == 0
+        @test Set(criticisms(K, [1, 2], n - 2)) == Set(3:n)
 
         k = 2
         c = kmedoids(pairwise(Euclidean(), X, dims=2), k)
