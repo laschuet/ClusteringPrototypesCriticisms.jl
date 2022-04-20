@@ -10,14 +10,31 @@ export criticisms,
         witness
 
 """
-    sqmmd(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel())
-    mmd²(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel())
+    sqmmd(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel)
+    mmd²(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel)
 
 Compute the squared maximum mean discrepancy between `X` and `Y` using the kernel function `k`.
 
 `X` and `Y` are expected to store observations in columns.
 """
-sqmmd(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel()) = mean(kernelmatrix(k, X, obsdim=2)) - 2 * mean(kernelmatrix(k, X, Y, obsdim=2)) + mean(kernelmatrix(k, Y, obsdim=2))
+function sqmmd(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel)
+    XX = kernelmatrix(k, X, obsdim=2)
+    XY = kernelmatrix(k, X, Y, obsdim=2)
+    YY = kernelmatrix(k, Y, obsdim=2)
+    return sqmmd(XX, XY, YY)
+end
+
+"""
+    sqmmd(XX::AbstractMatrix{<:Real}, XY::AbstractMatrix{<:Real}, YY::AbstractMatrix{<:Real})
+    mmd²(XX::AbstractMatrix{<:Real}, XY::AbstractMatrix{<:Real}, YY::AbstractMatrix{<:Real})
+
+Compute the squared maximum mean discrepancy using the kernel matrices `XX`, `XY`, and `YY`.
+
+`XX` is the kernel matrix of the matrices `X` and `X` etc.
+"""
+sqmmd(XX::AbstractMatrix{<:Real}, XY::AbstractMatrix{<:Real}, YY::AbstractMatrix{<:Real}) = mean(XX) - 2 * mean(XY) + mean(YY)
+
+# Alias
 const mmd² = sqmmd
 
 """

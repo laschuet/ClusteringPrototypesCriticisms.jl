@@ -7,8 +7,17 @@ using Test
 @testset verbose=true "PrototypesCriticisms.jl" begin
     @testset "sqmmd (mmd²)" begin
         X = rand(5, 10)
-        @test sqmmd(X, X) == mmd²(X, X)
-        @test sqmmd(X, X) ≈ 0
+
+        @test sqmmd(X, X, RBFKernel()) ≈ 0
+
+        Y = X
+        XX = kernelmatrix(RBFKernel(), X, obsdim=2)
+        XY = kernelmatrix(RBFKernel(), X, Y, obsdim=2)
+        YY = kernelmatrix(RBFKernel(), Y, obsdim=2)
+        @test sqmmd(XX, XY, YY) ≈ 0
+
+        @test mmd²(X, X, RBFKernel()) == sqmmd(X, X, RBFKernel())
+        @test mmd²(XX, XY, YY) == sqmmd(XX, XY, YY)
     end
 
     @testset "witness" begin
