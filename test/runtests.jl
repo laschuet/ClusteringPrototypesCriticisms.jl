@@ -7,16 +7,17 @@ using Test
 @testset verbose=true "PrototypesCriticisms.jl" begin
     @testset "sqmmd (mmd²)" begin
         X = rand(5, 10)
+        k = RBFKernel()
 
-        @test sqmmd(X, X, RBFKernel()) ≈ 0
+        @test sqmmd(X, X, k) ≈ 0
 
         Y = X
-        XX = kernelmatrix(RBFKernel(), X, obsdim=2)
-        XY = kernelmatrix(RBFKernel(), X, Y, obsdim=2)
-        YY = kernelmatrix(RBFKernel(), Y, obsdim=2)
+        XX = kernelmatrix(k, X, obsdim=2)
+        XY = kernelmatrix(k, X, Y, obsdim=2)
+        YY = kernelmatrix(k, Y, obsdim=2)
         @test sqmmd(XX, XY, YY) ≈ 0
 
-        @test mmd²(X, X, RBFKernel()) == sqmmd(X, X, RBFKernel())
+        @test mmd²(X, X, k) == sqmmd(X, X, k)
         @test mmd²(XX, XY, YY) == sqmmd(XX, XY, YY)
     end
 
@@ -25,19 +26,21 @@ using Test
         Y = ones(5, 10)
         x = X[:, 1]
         y = Y[:, 1]
-        @test witness(x, X, X, RBFKernel()) ≈ 0
-        @test witness(x, X, Y, RBFKernel()) > 0
-        @test witness(y, X, Y, RBFKernel()) < 0
+        k = RBFKernel()
+        @test witness(x, X, X, k) ≈ 0
+        @test witness(x, X, Y, k) > 0
+        @test witness(y, X, Y, k) < 0
     end
 
     @testset "prototypes" begin
         n = 50
         X = rand(5, n)
+        k = RBFKernel()
 
-        @test length(prototypes(X, RBFKernel(), 0)) == 0
-        @test Set(prototypes(X, RBFKernel(), n)) == Set(1:n)
+        @test length(prototypes(X, k, 0)) == 0
+        @test Set(prototypes(X, k, n)) == Set(1:n)
 
-        K = kernelmatrix(RBFKernel(), X, obsdim=2)
+        K = kernelmatrix(k, X, obsdim=2)
         @test length(prototypes(K, 0)) == 0
         @test Set(prototypes(K, n)) == Set(1:n)
 
@@ -90,11 +93,12 @@ using Test
     @testset "criticisms" begin
         n = 50
         X = rand(5, n)
+        k = RBFKernel()
 
-        @test length(criticisms(X, RBFKernel(), [1, 2], 0)) == 0
-        @test Set(criticisms(X, RBFKernel(), [1, 2], n - 2)) == Set(3:n)
+        @test length(criticisms(X, k, [1, 2], 0)) == 0
+        @test Set(criticisms(X, k, [1, 2], n - 2)) == Set(3:n)
 
-        K = kernelmatrix(RBFKernel(), X, obsdim=2)
+        K = kernelmatrix(k, X, obsdim=2)
         @test length(criticisms(K, [1, 2], 0)) == 0
         @test Set(criticisms(K, [1, 2], n - 2)) == Set(3:n)
 
