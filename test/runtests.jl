@@ -25,12 +25,12 @@ using Test
         n = 50
         X = rand(5, n)
 
-        @test length(prototypes(X, 0)) == 0
-        @test Set(prototypes(X, n)) == Set(1:n)
+        @test length(prototypes(X, RBFKernel(), 0)) == 0
+        @test Set(prototypes(X, RBFKernel(), n)) == Set(1:n)
 
         K = kernelmatrix(RBFKernel(), X, obsdim=2)
-        @test length(prototypes(0, K)) == 0
-        @test Set(prototypes(n, K)) == Set(1:n)
+        @test length(prototypes(K, 0)) == 0
+        @test Set(prototypes(K, n)) == Set(1:n)
 
         k = 2
         c = kmedoids(pairwise(Euclidean(), X, dims=2), k)

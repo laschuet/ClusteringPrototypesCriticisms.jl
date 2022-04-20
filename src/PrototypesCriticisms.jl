@@ -21,23 +21,23 @@ sqmmd(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel(
 const mmd² = sqmmd
 
 """
-    prototypes(X::AbstractMatrix{<:Real}, n::Int, k::Kernel=RBFKernel())
+    prototypes(X::AbstractMatrix{<:Real}, k::Kernel, n::Int)
 
 Return the indices of `n` prototypes in `X` using the kernel function `k`.
 
 `X` is expected to store observations in columns.
 """
-function prototypes(X::AbstractMatrix{<:Real}, n::Int, k::Kernel=RBFKernel())
+function prototypes(X::AbstractMatrix{<:Real}, k::Kernel, n::Int)
     K = kernelmatrix(k, X, obsdim=2)
-    return prototypes(n, K)
+    return prototypes(K, n)
 end
 
 """
-    prototypes(n::Int, K::AbstractMatrix{<:Real})
+    prototypes(K::AbstractMatrix{<:Real}, n::Int)
 
 Return the indices of `n` prototypes using the kernel matrix `K`.
 """
-function prototypes(n::Int, K::AbstractMatrix{<:Real})
+function prototypes(K::AbstractMatrix{<:Real}, n::Int)
     doubledkernelmeans = 2 * mean(K, dims=1)
     initialcandidates = 1:size(K, 2)
     protoids = Int[]
