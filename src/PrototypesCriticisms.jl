@@ -29,8 +29,17 @@ Return the indices of `n` prototypes in `X` using the kernel function `k`.
 """
 function prototypes(X::AbstractMatrix{<:Real}, n::Int, k::Kernel=RBFKernel())
     K = kernelmatrix(k, X, obsdim=2)
+    return prototypes(n, K)
+end
+
+"""
+    prototypes(n::Int, K::AbstractMatrix{<:Real})
+
+Return the indices of `n` prototypes using the kernel matrix `K`.
+"""
+function prototypes(n::Int, K::AbstractMatrix{<:Real})
     doubledkernelmeans = 2 * mean(K, dims=1)
-    initialcandidates = 1:size(X, 2)
+    initialcandidates = 1:size(K, 2)
     protoids = Int[]
     while length(protoids) < n
         candidates = setdiff(initialcandidates, protoids)

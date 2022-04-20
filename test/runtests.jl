@@ -1,6 +1,7 @@
 using PrototypesCriticisms
 using Clustering
 using Distances
+using KernelFunctions
 using Test
 
 @testset verbose=true "PrototypesCriticisms.jl" begin
@@ -26,6 +27,10 @@ using Test
 
         @test length(prototypes(X, 0)) == 0
         @test Set(prototypes(X, n)) == Set(1:n)
+
+        K = kernelmatrix(RBFKernel(), X, obsdim=2)
+        @test length(prototypes(0, K)) == 0
+        @test Set(prototypes(n, K)) == Set(1:n)
 
         k = 2
         c = kmedoids(pairwise(Euclidean(), X, dims=2), k)
