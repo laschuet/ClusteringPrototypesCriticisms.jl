@@ -99,13 +99,13 @@ Return the indices of the `n` prototypes for every cluster of the fuzzy c-means 
 prototypes(c::FuzzyCMeansResult, n::Int=1) = _instances(c.weights, n)
 
 """
-    witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel())
+    witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel)
 
 Compute the witness function of `X` and `Y` at `z` using the kernel function `k`.
 
 `X` and `Y` are expected to store observations in columns, and `z` is a single observation.
 """
-witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel=RBFKernel()) = mean(map(x -> k(z, x), eachcol(X))) - mean(map(y -> k(z, y), eachcol(Y)))
+witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel) = mean(map(x -> k(z, x), eachcol(X))) - mean(map(y -> k(z, y), eachcol(Y)))
 
 """
     criticisms(X::AbstractMatrix{<:Real}, k::Kernel, protoids::AbstractVector{Int}, n::Int)
