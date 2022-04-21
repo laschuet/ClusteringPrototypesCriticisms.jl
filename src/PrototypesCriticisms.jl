@@ -2,6 +2,7 @@ module PrototypesCriticisms
 
 using Clustering
 using KernelFunctions
+using LinearAlgebra
 using Statistics
 
 export criticisms,
@@ -132,7 +133,7 @@ function criticisms(K::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n:
         candidates = setdiff(initialcandidates, critids)
         avgproximities1 = kernelmeans[candidates]
         avgproximities2 = mean(K[protoids, candidates], dims=1)
-        absws = abs.(vec(avgproximities1) - vec(avgproximities2))
+        absws = abs.(vec(avgproximities1) - vec(avgproximities2)) .+ logdet(K[critids, critids])
         critid = candidates[argmax(absws)]
         push!(critids, critid)
     end
