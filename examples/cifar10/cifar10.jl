@@ -41,7 +41,7 @@ function main()
 
     # Load dataset and the corresponding pre-trained image embeddings
     dataset = CIFAR10()
-    embedding = load("embedding_train_vgg-19.jld2", "embedding")'
+    embedding = load("cifar-10_train_embedding_vgg-19.jld2", "embedding")'
 
     # Save whole data set as images
     saveasimage(dataset)
