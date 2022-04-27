@@ -56,6 +56,18 @@ function main()
     # Cluster data using k-medoids
     clustering = kmedoids(pairwise(Euclidean(), embedding), k)
 
+    # Evaluate the clustering
+    targets = dataset.targets .+ 1 # Cluster indices must start with 1 instead of 0
+    ris = randindex(clustering, targets)
+    println("Rand-related indices:")
+    println("  Adjusted rand index: ", ris[1])
+    println("  P(agree): ", ris[2])
+    println("  P(disagree): ", ris[3])
+    println("  P(agree) - P(disagree): ", ris[4])
+    println("Variation of information: ", Clustering.varinfo(clustering, targets))
+    println("V-measure: ", vmeasure(clustering, targets))
+    println("Mutual information: ", mutualinfo(clustering, targets))
+
     # Naive prototypes and criticisms for the clustering
     protoids = prototypes(clustering, p)
     critids = criticisms(clustering, c)
