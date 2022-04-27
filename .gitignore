@@ -16,4 +16,6 @@ Manifest.toml
 !examples/Manifest.toml
 !examples/cifar10/Manifest.toml
 
+examples/cifar10/out
+
 .vscode/
