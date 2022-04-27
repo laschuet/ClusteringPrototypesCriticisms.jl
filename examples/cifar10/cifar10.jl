@@ -77,6 +77,8 @@ function main()
     @info "Compute naive prototypes and criticisms..."
     protoids = prototypes(clustering, p)
     critids = criticisms(clustering, c)
+    println("Prototype ids: ", protoids)
+    println("Criticism ids: ", critids)
     for i = 1:k
         saveasimage(dataset, protoids[i], outdir="out/cifar-10/_protos/naive/$i")
         saveasimage(dataset, critids[i], outdir="out/cifar-10/_crits/naive/$i")
@@ -99,6 +101,8 @@ function main()
         clustercids = criticisms(subembedding, kernel, clusterpids, c)
         critids[i] = clusters[i][clustercids]
     end
+    println("Prototype ids: ", protoids)
+    println("Criticism ids: ", critids)
     for i = 1:k
         saveasimage(dataset, protoids[i], outdir="out/cifar-10/_protos/mmd-critic/$i")
         saveasimage(dataset, critids[i], outdir="out/cifar-10/_crits/mmd-critic/$i")
