@@ -17,15 +17,16 @@ Assumes that each data instance actually represents an image.
 
 # Keyword arguments
 - `outdir`: the location where the image files are saved.
+- `ext`: the file extension of the image files.
 
 """
-function saveasimage(d, ids; outdir="out")
+function saveasimage(d, ids; outdir="out", ext="png")
     mkpath(outdir)
     for i in ids
         image = convert2image(d, i)
         classnames = d.metadata["class_names"]
         classname = classnames[d.targets[i] + 1]
-        save("$(outdir)/$("0" ^ (length(string(length(d))) - length(string(i))))$(i)_$(classname).png", image)
+        save("$(outdir)/$("0" ^ (length(string(length(d))) - length(string(i))))$(i)_$(classname).$(ext)", image)
     end
 end
 saveasimage(d; kwargs...) = saveasimage(d, 1:length(d); kwargs...)
