@@ -44,7 +44,7 @@ function main()
     embedding = load("cifar-10_train_embedding_vgg-19.jld2", "embedding")'
 
     # Save whole data set as images
-    saveasimage(dataset)
+    saveasimage(dataset, outdir="out/cifar-10")
 
     # Set main program parameters
     k = 10 # Number of clusters to compute
@@ -58,8 +58,8 @@ function main()
     protoids = prototypes(clustering, p)
     critids = criticisms(clustering, c)
     for i = 1:k
-        saveasimage(dataset, protoids[i], outdir="out/_protos/naive/$i")
-        saveasimage(dataset, critids[i], outdir="out/_crits/naive/$i")
+        saveasimage(dataset, protoids[i], outdir="out/cifar-10/_protos/naive/$i")
+        saveasimage(dataset, critids[i], outdir="out/cifar-10/_crits/naive/$i")
     end
 
     # Prototypes and criticisms for the clustering using MMD-critic
@@ -79,8 +79,8 @@ function main()
         critids[i] = clusters[i][clustercids]
     end
     for i = 1:k
-        saveasimage(dataset, protoids[i], outdir="out/_protos/mmd-critic/$i")
-        saveasimage(dataset, critids[i], outdir="out/_crits/mmd-critic/$i")
+        saveasimage(dataset, protoids[i], outdir="out/cifar-10/_protos/mmd-critic/$i")
+        saveasimage(dataset, critids[i], outdir="out/cifar-10/_crits/mmd-critic/$i")
     end
 end
 
