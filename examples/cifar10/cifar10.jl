@@ -43,10 +43,12 @@ function main()
     Random.seed!(42)
 
     # Load dataset and the corresponding pre-trained image embeddings
+    @info "Load data..."
     dataset = CIFAR10()
     embedding = load("cifar-10_train_embedding_vgg-19.jld2", "embedding")'
 
     # Save whole data set as images
+    @info "Save images..."
     saveasimage(dataset, outdir="out/cifar-10")
 
     # Set main program parameters
@@ -55,9 +57,11 @@ function main()
     c = 5 # Number of criticisms to find
 
     # Cluster data using k-medoids
+    @info "Cluster data..."
     clustering = kmedoids(pairwise(Euclidean(), embedding), k)
 
     # Evaluate the clustering
+    @info "Evaluate clustering..."
     targets = dataset.targets .+ 1 # Cluster indices must start with 1 instead of 0
     ris = randindex(clustering, targets)
     println("Rand-related indices:")
@@ -70,6 +74,7 @@ function main()
     println("Mutual information: ", mutualinfo(clustering, targets))
 
     # Naive prototypes and criticisms for the clustering
+    @info "Compute naive prototypes and criticisms..."
     protoids = prototypes(clustering, p)
     critids = criticisms(clustering, c)
     for i = 1:k
@@ -78,6 +83,7 @@ function main()
     end
 
     # Prototypes and criticisms for the clustering using MMD-critic
+    @info "Compute MMD-critic prototypes and criticisms..."
     ys = assignments(clustering)
     clusters = Vector{Vector{Int}}(undef, k)
     for i = 1:k
