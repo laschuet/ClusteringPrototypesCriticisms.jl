@@ -25,7 +25,7 @@ function saveasimage(d, ids; outdir="out", ext="png")
     for i in ids
         image = convert2image(d, i)
         classname = d.targets[i]
-        if haskey(d.metadata, "class_name")
+        if haskey(d.metadata, "class_names")
             classnames = d.metadata["class_names"]
             classname = classnames[d.targets[i] + 1]
         end
