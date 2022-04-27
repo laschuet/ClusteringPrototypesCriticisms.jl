@@ -24,8 +24,10 @@ function saveasimage(d, ids; outdir="out", ext="png")
     mkpath(outdir)
     for i in ids
         image = convert2image(d, i)
-        classnames = d.metadata["class_names"]
-        classname = classnames[d.targets[i] + 1]
+        if haskey(d.metadata, "class_name")
+            classnames = d.metadata["class_names"]
+            classname = classnames[d.targets[i] + 1]
+        end
         save("$(outdir)/$("0" ^ (length(string(length(d))) - length(string(i))))$(i)_$(classname).$(ext)", image)
     end
 end
