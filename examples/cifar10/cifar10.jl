@@ -51,6 +51,23 @@ function printclusters(clusters; headline="", indent=2)
 end
 
 """
+    evaluate(c, ys)
+
+Evaluate the clustering `c` using the labels `ys`.
+"""
+function evaluate(c, ys)
+    ris = randindex(c, ys)
+    println("Rand-related indices:")
+    println("  Adjusted rand index: ", ris[1])
+    println("  P(agree): ", ris[2])
+    println("  P(disagree): ", ris[3])
+    println("  P(agree) - P(disagree): ", ris[4])
+    println("Variation of information: ", Clustering.varinfo(c, ys))
+    println("V-measure: ", vmeasure(c, ys))
+    println("Mutual information: ", mutualinfo(c, ys))
+end
+
+"""
     main()
 
 Run the example.
@@ -79,15 +96,7 @@ function main()
     # Evaluate the clustering
     @info "Evaluate clustering..."
     targets = dataset.targets .+ 1 # Cluster indices must start with 1 instead of 0
-    ris = randindex(clustering, targets)
-    println("Rand-related indices:")
-    println("  Adjusted rand index: ", ris[1])
-    println("  P(agree): ", ris[2])
-    println("  P(disagree): ", ris[3])
-    println("  P(agree) - P(disagree): ", ris[4])
-    println("Variation of information: ", Clustering.varinfo(clustering, targets))
-    println("V-measure: ", vmeasure(clustering, targets))
-    println("Mutual information: ", mutualinfo(clustering, targets))
+    evaluate(clustering, targets)
 
     # Naive prototypes and criticisms for the clustering
     @info "Compute naive prototypes and criticisms..."
