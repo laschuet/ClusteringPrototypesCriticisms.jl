@@ -46,7 +46,7 @@ Print all instances of every cluster in `clusters`.
 function printclusters(clusters; headline="", indent=2)
     println(headline)
     for (i, instances) in enumerate(clusters)
-        println("$(" " ^ indent)Cluster $(lpad(i, ndigits(clusters))): $instances")
+        println("$(" " ^ indent)Cluster $(lpad(i, ndigits(length(clusters)))): $instances")
     end
 end
 
