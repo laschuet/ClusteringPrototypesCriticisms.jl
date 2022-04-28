@@ -35,6 +35,22 @@ end
 saveasimage(d; kwargs...) = saveasimage(d, 1:length(d); kwargs...)
 
 """
+    printclusters(clusters; headline="", indent=2)
+
+Print all instances of every cluster in `clusters`.
+
+# Keyword arguments
+- `headline`: the headline that is printed before the output of the clusters.
+- `indent`: the number of spaces to indent the output of every cluster.
+"""
+function printclusters(clusters; headline="", indent=2)
+    println(headline)
+    for (i, instances) in enumerate(clusters)
+        println("$(" " ^ indent)Cluster $(lpad(i, ndigits(clusters))): $instances")
+    end
+end
+
+"""
     main()
 
 Run the example.
@@ -77,8 +93,8 @@ function main()
     @info "Compute naive prototypes and criticisms..."
     protoids = prototypes(clustering, p)
     critids = criticisms(clustering, c)
-    println("Prototype ids: ", protoids)
-    println("Criticism ids: ", critids)
+    printclusters(protoids, headline="Prototype ids:")
+    printclusters(critids, headline="Criticism ids:")
     for i = 1:k
         saveasimage(dataset, protoids[i], outdir="out/cifar-10/_protos/naive/$i")
         saveasimage(dataset, critids[i], outdir="out/cifar-10/_crits/naive/$i")
@@ -101,8 +117,8 @@ function main()
         clustercids = criticisms(subembedding, kernel, clusterpids, c)
         critids[i] = clusters[i][clustercids]
     end
-    println("Prototype ids: ", protoids)
-    println("Criticism ids: ", critids)
+    printclusters(protoids, headline="Prototype ids:")
+    printclusters(critids, headline="Criticism ids:")
     for i = 1:k
         saveasimage(dataset, protoids[i], outdir="out/cifar-10/_protos/mmd-critic/$i")
         saveasimage(dataset, critids[i], outdir="out/cifar-10/_crits/mmd-critic/$i")
