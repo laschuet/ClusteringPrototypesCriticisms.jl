@@ -29,7 +29,7 @@ function saveasimage(d, ids; outdir="out", ext="png")
             classnames = d.metadata["class_names"]
             classname = classnames[d.targets[i] + 1]
         end
-        save("$(outdir)/$("0" ^ (length(string(length(d))) - length(string(i))))$(i)_$(classname).$(ext)", image)
+        save("$outdir/$("0" ^ (ndigits(length(d)) - ndigits(i)))$(i)_$classname.$ext", image)
     end
 end
 saveasimage(d; kwargs...) = saveasimage(d, 1:length(d); kwargs...)
