@@ -36,6 +36,7 @@ Run the example.
 function main()
     Random.seed!(42)
     update_theme!(font="Libertinus Serif")
+    mkpath("out")
 
     n = 40
     D1 = [rand(Normal(1, 0.1), n) rand(Normal(1, 0.3), n)]
@@ -84,6 +85,7 @@ function main()
     output(D, protoids, critids, axes[5], "MMD-critic", color=:black)
 
     display(fig)
+    save("out/raw.pdf", fig)
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
