@@ -84,7 +84,6 @@ function main()
     critids = criticisms(D, kernel, protoids, k)
     output(D, protoids, critids, axes[5], "MMD-critic", color=:grey)
 
-    display(fig)
     save("out/raw.pdf", fig)
 end
 
