@@ -20,12 +20,12 @@ function output(D, protoids, critids, axis, title; color=nothing)
     crits = D[:, first.(critids)]
     axis.title = title
     if isnothing(color)
-        scatter!(axis, D[1, :], D[2, :], markersize=5)
+        scatter!(axis, D[1, :], D[2, :], markersize=4)
     else
-        scatter!(axis, D[1, :], D[2, :], color=color, markersize=5)
+        scatter!(axis, D[1, :], D[2, :], color=color, markersize=4)
     end
-    scatter!(axis, protos[1, :], protos[2, :], color=:red, marker=:rect)
-    scatter!(axis, crits[1, :], crits[2, :], marker=:circle)
+    scatter!(axis, protos[1, :], protos[2, :], color=:red, marker=:cross)
+    scatter!(axis, crits[1, :], crits[2, :], color=:green, marker=:xcross)
 end
 
 """
@@ -82,7 +82,7 @@ function main()
     kernel = with_lengthscale(RBFKernel(), sqrt(size(D, 1)))
     protoids = prototypes(D, kernel, k)
     critids = criticisms(D, kernel, protoids, k)
-    output(D, protoids, critids, axes[5], "MMD-critic", color=:black)
+    output(D, protoids, critids, axes[5], "MMD-critic", color=:grey)
 
     display(fig)
     save("out/raw.pdf", fig)
