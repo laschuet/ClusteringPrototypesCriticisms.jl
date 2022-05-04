@@ -7,7 +7,7 @@ using LinearAlgebra
 using PrototypesCriticisms
 using Random
 
-function clust(D, protoids, critids, axis, title; color=nothing)
+function output(D, protoids, critids, axis, title; color=nothing)
     println("$title:")
     println("  Prototypes: ", protoids)
     println("  Criticisms: ", critids)
@@ -45,19 +45,19 @@ function main()
     clustering = kmedoids(pairwise(Euclidean(), D), k)
     protoids = prototypes(clustering, p)
     critids = criticisms(clustering, c)
-    clust(D, protoids, critids, axes[1], "k-medoids", color=assignments(clustering))
+    output(D, protoids, critids, axes[1], "k-medoids", color=assignments(clustering))
 
     # k-means
     clustering = kmeans(D, k)
     protoids = prototypes(clustering, p)
     critids = criticisms(clustering, c)
-    clust(D, protoids, critids, axes[2], "k-means", color=assignments(clustering))
+    output(D, protoids, critids, axes[2], "k-means", color=assignments(clustering))
 
     # fuzzy c-means
     clustering = fuzzy_cmeans(D, k, 2)
     protoids = prototypes(clustering, p)
     critids = criticisms(clustering, c)
-    clust(D, protoids, critids, axes[3], "fuzzy c-means", color=map(i -> i[2], argmax(clustering.weights, dims=2)))
+    output(D, protoids, critids, axes[3], "fuzzy c-means", color=map(i -> i[2], argmax(clustering.weights, dims=2)))
 
     # affinity propagation
     S = -pairwise(Euclidean(), D)
@@ -71,7 +71,7 @@ function main()
     kernel = with_lengthscale(RBFKernel(), sqrt(size(D, 1)))
     protoids = prototypes(D, kernel, k)
     critids = criticisms(D, kernel, protoids, k)
-    clust(D, protoids, critids, axes[5], "MMD-critic", color=:black)
+    output(D, protoids, critids, axes[5], "MMD-critic", color=:black)
 
     display(fig)
 end
