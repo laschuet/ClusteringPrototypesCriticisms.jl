@@ -7,6 +7,11 @@ using LinearAlgebra
 using PrototypesCriticisms
 using Random
 
+"""
+    output(D, protoids, critids, axis, title; color=nothing)
+
+Print basic text output, and produce plot for the data, prototypes, and criticisms.
+"""
 function output(D, protoids, critids, axis, title; color=nothing)
     println("$title:")
     println("  Prototypes: ", protoids)
@@ -23,6 +28,11 @@ function output(D, protoids, critids, axis, title; color=nothing)
     scatter!(axis, crits[1, :], crits[2, :], marker=:circle)
 end
 
+"""
+    main()
+
+Run the example.
+"""
 function main()
     Random.seed!(42)
     update_theme!(font="Libertinus Serif")
