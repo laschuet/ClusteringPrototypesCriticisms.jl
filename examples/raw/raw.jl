@@ -3,6 +3,7 @@ using Clustering
 using Distances
 using Distributions
 using KernelFunctions
+using LinearAlgebra
 using PrototypesCriticisms
 using Random
 
@@ -57,6 +58,14 @@ function main()
     protoids = prototypes(clustering, p)
     critids = criticisms(clustering, c)
     clust(D, protoids, critids, axes[3], "fuzzy c-means", color=map(i -> i[2], argmax(clustering.weights, dims=2)))
+
+    # affinity propagation
+    S = -pairwise(Euclidean(), D)
+    S = S - diagm(0 => diag(S)) + median(S) * I
+    clustering = affinityprop(S)
+    println("affinity propagation:")
+    axes[4].title = "affinity propagation"
+    scatter!(axes[4], D[1, :], D[2, :], color=assignments(clustering), markersize=5)
 
     # MMD-critic
     kernel = with_lengthscale(RBFKernel(), sqrt(size(D, 1)))
