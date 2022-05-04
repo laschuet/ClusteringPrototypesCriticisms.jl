@@ -173,8 +173,12 @@ end
 # Return instances via their assignment weights
 function _instances(W::AbstractMatrix{<:Real}, n::Int=1, rev::Bool=false)
     instances = Vector{Vector{Int}}()
+    hardassignments = vec(map(i -> i[2], argmax(W, dims=2)))
     for i = 1:size(W, 2)
-        push!(instances, partialsortperm(view(W, :, i), 1:n, rev=rev))
+        v = view(W, hardassignments .== i, i)
+        permutation = partialsortperm(v, 1:n, rev=!rev)
+        parentinstances = parentindices(v)[1]
+        push!(instances, parentinstances[permutation])
     end
     return instances
 end
