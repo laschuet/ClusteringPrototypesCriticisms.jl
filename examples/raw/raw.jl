@@ -24,6 +24,7 @@ end
 
 function main()
     Random.seed!(42)
+    update_theme!(font="Libertinus Serif")
 
     n = 40
     D1 = [rand(Normal(1, 0.1), n) rand(Normal(1, 0.3), n)]
