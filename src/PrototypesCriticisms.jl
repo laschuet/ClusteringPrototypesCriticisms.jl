@@ -97,7 +97,7 @@ prototypes(c::KmeansResult, n::Int=1) = _instances(nclusters(c), assignments(c),
 
 Return the indices of the `n` prototypes for every cluster of the fuzzy c-means clustering `c`.
 """
-prototypes(c::FuzzyCMeansResult, n::Int=1) = _instances(c.weights, n)
+prototypes(c::FuzzyCMeansResult, n::Int=1) = _instances(c.weights, n, true)
 
 """
     witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel)
@@ -159,7 +159,7 @@ criticisms(c::KmeansResult, n::Int=1) = _instances(nclusters(c), assignments(c),
 
 Return the indices of the `n` criticisms for every cluster of the fuzzy c-means clustering `c`.
 """
-criticisms(c::FuzzyCMeansResult, n::Int=1) = _instances(c.weights, n, true)
+criticisms(c::FuzzyCMeansResult, n::Int=1) = _instances(c.weights, n)
 
 # Return instances via their assignment costs
 function _instances(k::Int, assignments::Vector{Int}, costs::Vector{<:Real}, n::Int, rev::Bool=false)
@@ -176,7 +176,7 @@ function _instances(W::AbstractMatrix{<:Real}, n::Int=1, rev::Bool=false)
     hardassignments = vec(map(i -> i[2], argmax(W, dims=2)))
     for i = 1:size(W, 2)
         v = view(W, hardassignments .== i, i)
-        permutation = partialsortperm(v, 1:n, rev=!rev)
+        permutation = partialsortperm(v, 1:n, rev=rev)
         parentinstances = parentindices(v)[1]
         push!(instances, parentinstances[permutation])
     end
