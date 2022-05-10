@@ -74,9 +74,9 @@ function main()
     S = -pairwise(Euclidean(), D)
     S = S - diagm(0 => diag(S)) + median(S) * I
     clustering = affinityprop(S)
-    println("affinity propagation:")
-    axes[4].title = "affinity propagation"
-    scatter!(axes[4], D[1, :], D[2, :], color=assignments(clustering), markersize=5)
+    protoids = prototypes(clustering, D, p)
+    critids = criticisms(clustering, D, c)
+    output(D, protoids, critids, axes[4], "affinity propagation", color=assignments(clustering))
 
     # MMD-critic
     kernel = with_lengthscale(RBFKernel(), sqrt(size(D, 1)))
