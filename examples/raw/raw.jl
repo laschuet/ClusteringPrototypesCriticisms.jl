@@ -71,7 +71,7 @@ function main()
     output(D, protoids, critids, axes[3], "fuzzy c-means", color=map(i -> i[2], argmax(clustering.weights, dims=2)))
 
     # affinity propagation
-    S = -pairwise(Euclidean(), D)
+    S = -pairwise(Euclidean(), D, dims=2)
     S = S - diagm(0 => diag(S)) + median(S) * I
     clustering = affinityprop(S)
     protoids = prototypes(clustering, D, p)
