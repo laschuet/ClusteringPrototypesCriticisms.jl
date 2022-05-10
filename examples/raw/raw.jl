@@ -16,8 +16,8 @@ function output(D, protoids, critids, axis, title; color=nothing)
     println("$title:")
     println("  Prototypes: ", protoids)
     println("  Criticisms: ", critids)
-    protos = D[:, first.(protoids)]
-    crits = D[:, first.(critids)]
+    protos = D[:, vcat(protoids...)]
+    crits = D[:, vcat(critids...)]
     axis.title = title
     if isnothing(color)
         scatter!(axis, D[1, :], D[2, :], markersize=4)
