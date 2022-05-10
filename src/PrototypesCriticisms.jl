@@ -1,6 +1,7 @@
 module PrototypesCriticisms
 
 using Clustering
+using Distances
 using KernelFunctions
 using LinearAlgebra
 using Statistics
@@ -100,6 +101,28 @@ Return the indices of the `n` prototypes for every cluster of the fuzzy c-means 
 prototypes(c::FuzzyCMeansResult, n::Int=1) = _instances(c.weights, n, true)
 
 """
+    prototypes(c::AffinityPropResult, X::AbstractMatrix{<:Real}, n::Int=1; dist::Metric=Euclidean())
+
+Return the indices of the `n` prototypes for every cluster of the affinity propagation clustering `c`.
+To find `n>1` prototypes, the observations `X` are used for comparing the distances between observations and cluster centers.
+
+# Keyword arguments
+- `dist`: the distance metric used for computing the distances.
+"""
+function prototypes(c::AffinityPropResult, X::AbstractMatrix{<:Real}, n::Int=1; dist::Metric=Euclidean())
+    n == 1 && return [[i] for i in c.exemplars]
+    D = pairwise(dist, X, dims=2)
+    instances = Vector{Vector{Int}}()
+    for i = 1:nclusters(c)
+        v = view(D, assignments(c) .== i, c.exemplars[i])
+        permutation = partialsortperm(v, 1:n)
+        parentinstances = parentindices(v)[1]
+        push!(instances, parentinstances[permutation])
+    end
+    return instances
+end
+
+"""
     witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel)
 
 Compute the witness function of `X` and `Y` at `z` using the kernel function `k`.
@@ -160,6 +183,27 @@ criticisms(c::KmeansResult, n::Int=1) = _instances(nclusters(c), assignments(c),
 Return the indices of the `n` criticisms for every cluster of the fuzzy c-means clustering `c`.
 """
 criticisms(c::FuzzyCMeansResult, n::Int=1) = _instances(c.weights, n)
+
+"""
+    criticisms(c::AffinityPropResult, X::AbstractMatrix{<:Real}, n::Int=1; dist::Metric=Euclidean())
+
+Return the indices of the `n` criticisms for every cluster of the affinity propagation clustering `c`.
+To find `n>1` criticisms, the observations `X` are used for comparing the distances between observations and cluster centers.
+
+# Keyword arguments
+- `dist`: the distance metric used for computing the distances.
+"""
+function criticisms(c::AffinityPropResult, X::AbstractMatrix{<:Real}, n::Int=1; dist::Metric=Euclidean())
+    D = pairwise(dist, X, dims=2)
+    instances = Vector{Vector{Int}}()
+    for i = 1:nclusters(c)
+        v = view(D, assignments(c) .== i, c.exemplars[i])
+        permutation = partialsortperm(v, 1:n, rev=true)
+        parentinstances = parentindices(v)[1]
+        push!(instances, parentinstances[permutation])
+    end
+    return instances
+end
 
 # Return instances via their assignment costs
 function _instances(k::Int, assignments::Vector{Int}, costs::Vector{<:Real}, n::Int, rev::Bool=false)

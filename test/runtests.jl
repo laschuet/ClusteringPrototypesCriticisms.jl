@@ -2,6 +2,8 @@ using PrototypesCriticisms
 using Clustering
 using Distances
 using KernelFunctions
+using LinearAlgebra
+using Statistics
 using Test
 
 @testset verbose=true "PrototypesCriticisms.jl" begin
@@ -88,6 +90,22 @@ using Test
         for i = 1:k
             @test length(protoids[i]) == 2
         end
+
+        S = -pairwise(Euclidean(), X, dims=2)
+        S = S - diagm(0 => diag(S)) + median(S) * I
+        c = affinityprop(S)
+        protoids = prototypes(c, X)
+        @test typeof(protoids) == Vector{Vector{Int}}
+        @test length(protoids) == nclusters(c)
+        for i = 1:nclusters(c)
+            @test length(protoids[i]) == 1
+        end
+        protoids = prototypes(c, X, 2)
+        @test typeof(protoids) == Vector{Vector{Int}}
+        @test length(protoids) == nclusters(c)
+        for i = 1:nclusters(c)
+            @test length(protoids[i]) == 2
+        end
     end
 
     @testset "criticisms" begin
@@ -144,6 +162,22 @@ using Test
         @test typeof(critids) == Vector{Vector{Int}}
         @test length(critids) == k
         for i = 1:k
+            @test length(critids[i]) == 2
+        end
+
+        S = -pairwise(Euclidean(), X, dims=2)
+        S = S - diagm(0 => diag(S)) + median(S) * I
+        c = affinityprop(S)
+        critids = criticisms(c, X)
+        @test typeof(critids) == Vector{Vector{Int}}
+        @test length(critids) == nclusters(c)
+        for i = 1:nclusters(c)
+            @test length(critids[i]) == 1
+        end
+        critids = prototypes(c, X, 2)
+        @test typeof(critids) == Vector{Vector{Int}}
+        @test length(critids) == nclusters(c)
+        for i = 1:nclusters(c)
             @test length(critids[i]) == 2
         end
     end

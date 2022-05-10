@@ -17,6 +17,7 @@ support the selection of prototypes and criticisms with the following methods:
 | k-medoids                   | ✓          | ✓          |
 | k-means                     | ✓          | ✓          |
 | fuzzy c-means               | ✓          | ✓          |
+| affinity propagation        | ✓          | ✓          |
 
 [mmdcritic-url]: https://dl.acm.org/doi/10.5555/3157096.3157352
 
