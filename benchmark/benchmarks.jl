@@ -88,3 +88,7 @@ function main()
     println("Criticisms implementation (MMD-critic)")
     @btime criticisms($D, $kernel, $protoids, $c)
 end
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    main()
+end
