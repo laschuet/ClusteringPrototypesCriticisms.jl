@@ -13,6 +13,7 @@ docs/build/
 docs/site/
 
 Manifest.toml
+!benchmark/Manifest.toml
 !examples/*/Manifest.toml
 
 examples/cifar10/out
