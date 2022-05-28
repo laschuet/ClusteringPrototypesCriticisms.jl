@@ -28,7 +28,7 @@ with the following methods:
 | affinity propagation        | ✓          | ✓          |
 
 In order to compute prototypes and criticisms for clusterings, we provide two approaches:
-1. Directly use a clustering results computed with the
+1. Directly use a clustering result computed with the
     [Clustering.jl][clustering.jl-url] package.
 2. Provide the raw data set, the clustering assignments of the data instances,
     and the kind of method to be used for computing the prototypes and criticisms.
