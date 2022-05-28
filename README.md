@@ -8,12 +8,13 @@
 [codecov-img]: https://codecov.io/gh/laschuet/PrototypesCriticisms.jl/branch/main/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/laschuet/PrototypesCriticisms.jl
 
-A Julia package for computing prototypes and criticisms. Currently, there is a
-focus on finding prototypes and criticisms in clusterings. Nonetheless, this
-package can be used to find prototypes and criticisms in raw data sets. In this
-case, the clustering of the raw data set is an intermediate step that is hidden
-from the user. However, there are also other methods implemented that do not
-cluster the raw data set at all.
+A Julia package for computing prototypes and criticisms.
+
+Currently, there is a focus on finding prototypes and criticisms in clusterings.
+Nonetheless, this package can be used to find prototypes and criticisms in raw
+data sets. In this case, the clustering of the raw data set is an intermediate
+step that is hidden from the user. However, there are also other methods
+implemented that do not cluster the raw data set at all.
 
 In particular, we currently support the selection of prototypes and criticisms
 with the following methods:
