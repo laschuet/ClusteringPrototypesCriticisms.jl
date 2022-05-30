@@ -24,11 +24,11 @@ Assumes that each data instance actually represents an image.
 function saveasimage(d, ids; outdir="out", ext="png", useposprefix=true)
     mkpath(outdir)
     for (i, id) in enumerate(ids)
-        image = convert2image(d, i)
-        classname = d.targets[i]
+        image = convert2image(d, id)
+        classname = d.targets[id]
         if haskey(d.metadata, "class_names")
             classnames = d.metadata["class_names"]
-            classname = classnames[d.targets[i] + 1]
+            classname = classnames[d.targets[id] + 1]
         end
         prefix = useposprefix ? "$(i)_" : ""
         save("$outdir/$prefix$("0" ^ (ndigits(length(d)) - ndigits(id)))$(id)_$classname.$ext", image)
