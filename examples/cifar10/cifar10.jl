@@ -18,18 +18,20 @@ Assumes that each data instance actually represents an image.
 # Keyword arguments
 - `outdir`: the location where the image files are saved.
 - `ext`: the file extension of the image files.
+- `useposprefix`: prepend the position of the data instances in `ids` to the name of the image file.
 
 """
-function saveasimage(d, ids; outdir="out", ext="png")
+function saveasimage(d, ids; outdir="out", ext="png", useposprefix=true)
     mkpath(outdir)
-    for i in ids
+    for (i, id) in enumerate(ids)
         image = convert2image(d, i)
         classname = d.targets[i]
         if haskey(d.metadata, "class_names")
             classnames = d.metadata["class_names"]
             classname = classnames[d.targets[i] + 1]
         end
-        save("$outdir/$("0" ^ (ndigits(length(d)) - ndigits(i)))$(i)_$classname.$ext", image)
+        prefix = useposprefix ? "$(i)_" : ""
+        save("$outdir/$prefix$("0" ^ (ndigits(length(d)) - ndigits(id)))$(id)_$classname.$ext", image)
     end
 end
 saveasimage(d; kwargs...) = saveasimage(d, 1:length(d); kwargs...)
@@ -82,7 +84,7 @@ function main()
 
     # Save whole data set as images
     @info "Save images..."
-    saveasimage(dataset, outdir="out/cifar-10")
+    saveasimage(dataset, outdir="out/raw", useposprefix=false)
 
     # Set main program parameters
     k = 10 # Number of clusters to compute
@@ -105,8 +107,8 @@ function main()
     printclusters(protoids, headline="Prototype ids:")
     printclusters(critids, headline="Criticism ids:")
     for i = 1:k
-        saveasimage(dataset, protoids[i], outdir="out/cifar-10/_protos/naive/$i")
-        saveasimage(dataset, critids[i], outdir="out/cifar-10/_crits/naive/$i")
+        saveasimage(dataset, protoids[i], outdir="out/prototypes/naive/$i")
+        saveasimage(dataset, critids[i], outdir="out/criticisms/naive/$i")
     end
 
     # Prototypes and criticisms for the clustering using MMD-critic
@@ -129,8 +131,8 @@ function main()
     printclusters(protoids, headline="Prototype ids:")
     printclusters(critids, headline="Criticism ids:")
     for i = 1:k
-        saveasimage(dataset, protoids[i], outdir="out/cifar-10/_protos/mmd-critic/$i")
-        saveasimage(dataset, critids[i], outdir="out/cifar-10/_crits/mmd-critic/$i")
+        saveasimage(dataset, protoids[i], outdir="out/prototypes/mmd-critic/$i")
+        saveasimage(dataset, critids[i], outdir="out/criticisms/mmd-critic/$i")
     end
 end
 
