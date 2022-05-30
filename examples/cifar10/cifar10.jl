@@ -114,20 +114,9 @@ function main()
     # Prototypes and criticisms for the clustering using MMD-critic
     @info "Compute MMD-critic prototypes and criticisms..."
     ys = assignments(clustering)
-    clusters = Vector{Vector{Int}}(undef, k)
-    for i = 1:k
-        clusters[i] = findall(ys .== i)
-    end
-    protoids = Vector{Vector{Int}}(undef, k)
-    critids = Vector{Vector{Int}}(undef, k)
-    for i = 1:k
-        subembedding = view(embedding, :, clusters[i])
-        kernel = with_lengthscale(RBFKernel(), sqrt(size(embedding, 1)))
-        clusterpids = prototypes(subembedding, kernel, p)
-        protoids[i] = clusters[i][clusterpids]
-        clustercids = criticisms(subembedding, kernel, clusterpids, c)
-        critids[i] = clusters[i][clustercids]
-    end
+    kernel = with_lengthscale(RBFKernel(), sqrt(size(embedding, 1)))
+    protoids = prototypes(embedding, ys, p, kernel)
+    critids = criticisms(embedding, ys, protoids, c, kernel)
     printclusters(protoids, headline="Prototype ids:")
     printclusters(critids, headline="Criticism ids:")
     for i = 1:k
