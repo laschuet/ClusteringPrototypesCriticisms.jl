@@ -90,6 +90,8 @@ end
             test(prototypes(c, X, 2), numclusters, 2)
             test(prototypes(X, assignments(c), 2, :affinitypropagation), numclusters, 2)
         end
+
+        @test_throws ArgumentError prototypes(X, ones(Int, n), 2, :somenotexistingmethod)
     end
 
     @testset verbose=true "criticisms" begin
@@ -136,5 +138,7 @@ end
             test(criticisms(c, X, 2), numclusters, 2)
             test(criticisms(X, assignments(c), 2, :affinitypropagation), numclusters, 2)
         end
+
+        @test_throws ArgumentError criticisms(X, ones(Int, n), 2, :somenotexistingmethod)
     end
 end
