@@ -47,8 +47,8 @@ using Test
         protoids = prototypes(K, n)
         @test Set(protoids) == Set(1:n)
         protoids2 = prototypes(X, ones(Int, n), n, k)
-        @test Set(protoids2) == Set(1:n)
-        @test protoids2 == protoids
+        @test Set(protoids2...) == Set(1:n)
+        @test collect(protoids2...) == protoids
 
         k = 2
         c = kmedoids(pairwise(Euclidean(), X, dims=2), k)
