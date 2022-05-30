@@ -133,19 +133,51 @@ function prototypes(c::AffinityPropResult, X::AbstractMatrix{<:Real}, n::Int=1; 
 end
 
 """
-    criticisms(X::AbstractMatrix{<:Real}, ys::AbstractVector{Int}, protoids::AbstractVector{Int}, n::Int, k::Kernel)
+    criticisms(X::AbstractMatrix{<:Real}, ys::AbstractVector{Int}, k::Kernel, protoids::AbstractVector{Vector{Int}}, n::Int=1)
 
 Return the indices of the `n` criticisms for every cluster in `X` using the prototype indices `protoids` and the kernel function `k`.
 The cluster assignments of the observations are specified by `ys`.
 
 `X` is expected to store observations in columns.
 """
-function criticisms(X::AbstractMatrix{<:Real}, ys::Vector{Int}, protoids::AbstractVector{Vector{Int}}, n::Int, k::Kernel)
+function criticisms(X::AbstractMatrix{<:Real}, ys::AbstractVector{Int}, k::Kernel, protoids::AbstractVector{Vector{Int}}, n::Int=1)
     critids = Vector{Vector{Int}}()
     numclusters = length(unique(ys))
     for i = 1:numclusters
         v = view(X, :, ys .== i)
         push!(critids, criticisms(v, k, protoids[i], n))
+    end
+    return critids
+end
+
+"""
+    criticisms(X::AbstractMatrix{<:Real}, k::Kernel, protoids::AbstractVector{Int}, n::Int=1)
+
+Return the indices of the `n` criticisms in `X` using the prototype indices `protoids` and the kernel function `k`.
+
+`X` is expected to store observations in columns.
+"""
+function criticisms(X::AbstractMatrix{<:Real}, k::Kernel, protoids::AbstractVector{Int}, n::Int=1)
+    K = kernelmatrix(k, X, obsdim=2)
+    return criticisms(K, protoids, n)
+end
+
+"""
+    criticisms(K::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n::Int=1)
+
+Return the indices of the `n` criticisms using the prototype indices `protoids` and the kernel matrix `K`.
+"""
+function criticisms(K::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n::Int=1)
+    kernelmeans = mean(K, dims=1)
+    initialcandidates = setdiff(1:size(K, 2), protoids)
+    critids = Int[]
+    while length(critids) < n
+        candidates = setdiff(initialcandidates, critids)
+        avgproximities1 = kernelmeans[candidates]
+        avgproximities2 = mean(K[protoids, candidates], dims=1)
+        absws = abs.(vec(avgproximities1) - vec(avgproximities2)) .+ logdet(K[critids, critids])
+        critid = candidates[argmax(absws)]
+        push!(critids, critid)
     end
     return critids
 end
@@ -160,38 +192,6 @@ The cluster assignments of the observations are specified by `ys`.
 `s` must be one of `:kmedoids`, `:kmeans`, `:fuzzycmeans`, and `:affinitypropagation`.
 """
 criticisms(X::AbstractMatrix{<:Real}, ys::Union{Vector{Int}, Matrix{<:Real}}, n::Int, s::Symbol) = _instances(X, ys, n, _method(s), true)
-
-"""
-    criticisms(X::AbstractMatrix{<:Real}, k::Kernel, protoids::AbstractVector{Int}, n::Int)
-
-Return the indices of the `n` criticisms in `X` using the prototype indices `protoids` and the kernel function `k`.
-
-`X` is expected to store observations in columns.
-"""
-function criticisms(X::AbstractMatrix{<:Real}, k::Kernel, protoids::AbstractVector{Int}, n::Int)
-    K = kernelmatrix(k, X, obsdim=2)
-    return criticisms(K, protoids, n)
-end
-
-"""
-    criticisms(K::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n::Int)
-
-Return the indices of the `n` criticisms using the prototype indices `indices` and the kernel matrix `K`.
-"""
-function criticisms(K::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n::Int)
-    kernelmeans = mean(K, dims=1)
-    initialcandidates = setdiff(1:size(K, 2), protoids)
-    critids = Int[]
-    while length(critids) < n
-        candidates = setdiff(initialcandidates, critids)
-        avgproximities1 = kernelmeans[candidates]
-        avgproximities2 = mean(K[protoids, candidates], dims=1)
-        absws = abs.(vec(avgproximities1) - vec(avgproximities2)) .+ logdet(K[critids, critids])
-        critid = candidates[argmax(absws)]
-        push!(critids, critid)
-    end
-    return critids
-end
 
 """
     criticisms(c::KmedoidsResult, n::Int=1)

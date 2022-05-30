@@ -76,13 +76,15 @@ end
         numclusters = 2
 
         @testset "MMD-critic" begin
+            @test length(criticisms(X, k, [1, 2])) == 1
             @test length(criticisms(X, k, [1, 2], 0)) == 0
             @test Set(criticisms(X, k, [1, 2], n - 2)) == Set(3:n)
             K = kernelmatrix(k, X, obsdim=2)
+            @test length(criticisms(K, [1, 2])) == 1
             @test length(criticisms(K, [1, 2], 0)) == 0
             critids = criticisms(K, [1, 2], n - 2)
             @test Set(critids) == Set(3:n)
-            critids2 = criticisms(X, ones(Int, n), [[1, 2]], n - 2, k)
+            critids2 = criticisms(X, ones(Int, n), k, [[1, 2]], n - 2)
             @test Set(critids2...) == Set(3:n)
             @test collect(critids2...) == critids
         end
