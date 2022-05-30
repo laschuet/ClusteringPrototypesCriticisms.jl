@@ -72,7 +72,7 @@ Return the indices of the `n` prototypes for every cluster in `X` using the meth
 The cluster assignments of the observations are specified by `ys`.
 
 `X` is expected to store observations in columns.
-`s` must be one of `:kmeans`, `:kmedoids`, and `:affinitypropagation`.
+`s` must be one of `:kmedoids`, `:kmeans`, `:fuzzycmeans`, and `:affinitypropagation`.
 """
 prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol) = _instances(X, ys, n, _method(s))
 
@@ -207,7 +207,7 @@ Return the indices of the `n` criticisms for every cluster in `X` using the meth
 The cluster assignments of the observations are specified by `ys`.
 
 `X` is expected to store observations in columns.
-`s` must be one of `:kmeans`, `:kmedoids`, and `:affinitypropagation`.
+`s` must be one of `:kmedoids`, `:kmeans`, `:fuzzycmeans`, and `:affinitypropagation`.
 """
 criticisms(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol) = _instances(X, ys, n, _method(s), true)
 
