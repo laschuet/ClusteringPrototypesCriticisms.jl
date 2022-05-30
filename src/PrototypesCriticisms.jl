@@ -32,7 +32,8 @@ function prototypes(X::AbstractMatrix{<:Real}, ys::AbstractVector{Int}, k::Kerne
     numclusters = length(unique(ys))
     for i = 1:numclusters
         v = view(X, :, ys .== i)
-        push!(protoids, prototypes(v, k, n))
+        originalids = parentindices(v)[2]
+        push!(protoids, originalids[prototypes(v, k, n)])
     end
     return protoids
 end
