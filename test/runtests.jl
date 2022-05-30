@@ -46,7 +46,7 @@ using Test
         @test length(prototypes(K, 0)) == 0
         protoids = prototypes(K, n)
         @test Set(protoids) == Set(1:n)
-        protoids2 = prototypes(X, ones(n), n, k)
+        protoids2 = prototypes(X, ones(Int, n), n, k)
         @test Set(protoids2) == Set(1:n)
         @test protoids2 == protoids
 
