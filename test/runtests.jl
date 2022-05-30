@@ -6,6 +6,14 @@ using LinearAlgebra
 using Statistics
 using Test
 
+function test(instanceids, k, n)
+    @test typeof(instanceids) == Vector{Vector{Int}}
+    @test length(instanceids) == k
+    for i = 1:k
+        @test length(instanceids[i]) == n
+    end
+end
+
 @testset verbose=true "PrototypesCriticisms.jl" begin
     @testset "sqmmd (mmd²)" begin
         X = rand(5, 10)
@@ -35,31 +43,10 @@ using Test
     end
 
     @testset "prototypes" begin
-        function test(X, c, k, s)
-            protoids = prototypes(c)
-            @test typeof(protoids) == Vector{Vector{Int}}
-            @test length(protoids) == k
-            for i = 1:k
-                @test length(protoids[i]) == 1
-            end
-            protoids = prototypes(c, 2)
-            @test typeof(protoids) == Vector{Vector{Int}}
-            @test length(protoids) == k
-            for i = 1:k
-                @test length(protoids[i]) == 2
-            end
-            protoids2 = prototypes(X, assignments(c), 2, s)
-            @test typeof(protoids2) == Vector{Vector{Int}}
-            @test length(protoids2) == k
-            for i = 1:k
-                @test length(protoids2[i]) == 2
-            end
-            @test protoids2 == protoids
-        end
-
         n = 50
         X = rand(5, n)
         k = RBFKernel()
+        numclusters = 2
 
         @test length(prototypes(X, k, 0)) == 0
         @test Set(prototypes(X, k, n)) == Set(1:n)
@@ -72,39 +59,35 @@ using Test
         @test Set(protoids2...) == Set(1:n)
         @test collect(protoids2...) == protoids
 
-        k = 2
-        c = kmedoids(pairwise(Euclidean(), X, dims=2), k)
-        test(X, c, k, :kmedoids)
+        c = kmedoids(pairwise(Euclidean(), X, dims=2), numclusters)
+        test(prototypes(c), numclusters, 1)
+        test(prototypes(c, 2), numclusters, 2)
+        test(prototypes(X, assignments(c), 2, :kmedoids), numclusters, 2)
 
-        k = 2
-        c = kmeans(X, k)
-        test(X, c, k, :kmeans)
+        c = kmeans(X, numclusters)
+        test(prototypes(c), numclusters, 1)
+        test(prototypes(c, 2), numclusters, 2)
+        test(prototypes(X, assignments(c), 2, :kmeans), numclusters, 2)
 
-        k = 2
-        c = fuzzy_cmeans(X, k, 2)
-        test(X, c, k, :fuzzycmeans)
+        c = fuzzy_cmeans(X, numclusters, 2)
+        test(prototypes(c), numclusters, 1)
+        test(prototypes(c, 2), numclusters, 2)
+        test(prototypes(X, assignments(c), 2, :fuzzycmeans), numclusters, 2)
 
         S = -pairwise(Euclidean(), X, dims=2)
         S = S - diagm(0 => diag(S)) + median(S) * I
         c = affinityprop(S)
-        protoids = prototypes(c, X)
-        @test typeof(protoids) == Vector{Vector{Int}}
-        @test length(protoids) == nclusters(c)
-        for i = 1:nclusters(c)
-            @test length(protoids[i]) == 1
-        end
-        protoids = prototypes(c, X, 2)
-        @test typeof(protoids) == Vector{Vector{Int}}
-        @test length(protoids) == nclusters(c)
-        for i = 1:nclusters(c)
-            @test length(protoids[i]) == 2
-        end
+        numclusters = nclusters(c)
+        test(prototypes(c, X), numclusters, 1)
+        test(prototypes(c, X, 2), numclusters, 2)
+        test(prototypes(X, assignments(c), 2, :affinitypropagation), numclusters, 2)
     end
 
     @testset "criticisms" begin
         n = 50
         X = rand(5, n)
         k = RBFKernel()
+        numclusters = 2
 
         @test length(criticisms(X, k, [1, 2], 0)) == 0
         @test Set(criticisms(X, k, [1, 2], n - 2)) == Set(3:n)
@@ -113,72 +96,27 @@ using Test
         @test length(criticisms(K, [1, 2], 0)) == 0
         @test Set(criticisms(K, [1, 2], n - 2)) == Set(3:n)
 
-        k = 2
-        c = kmedoids(pairwise(Euclidean(), X, dims=2), k)
-        critids = criticisms(c)
-        @test typeof(critids) == Vector{Vector{Int}}
-        @test length(critids) == k
-        for i = 1:k
-            @test length(critids[i]) == 1
-        end
-        critids = criticisms(c, 2)
-        @test typeof(critids) == Vector{Vector{Int}}
-        @test length(critids) == k
-        for i = 1:k
-            @test length(critids[i]) == 2
-        end
+        c = kmedoids(pairwise(Euclidean(), X, dims=2), numclusters)
+        test(criticisms(c), numclusters, 1)
+        test(criticisms(c, 2), numclusters, 2)
+        test(criticisms(X, assignments(c), 2, :kmedoids), numclusters, 2)
 
-        k = 2
-        c = kmeans(X, k)
-        critids = criticisms(c)
-        @test typeof(critids) == Vector{Vector{Int}}
-        @test length(critids) == k
-        for i = 1:k
-            @test length(critids[i]) == 1
-        end
-        critids = criticisms(c, 2)
-        @test typeof(critids) == Vector{Vector{Int}}
-        @test length(critids) == k
-        for i = 1:k
-            @test length(critids[i]) == 2
-        end
-        critids2 = criticisms(X, assignments(c), 2, :kmeans)
-        @test typeof(critids2) == Vector{Vector{Int}}
-        @test length(critids2) == k
-        for i = 1:k
-            @test length(critids2[i]) == 2
-        end
-        @test critids2 == critids
+        c = kmeans(X, numclusters)
+        test(criticisms(c), numclusters, 1)
+        test(criticisms(c, 2), numclusters, 2)
+        test(criticisms(X, assignments(c), 2, :kmeans), numclusters, 2)
 
-        k = 2
-        c = fuzzy_cmeans(X, k, 2)
-        critids = criticisms(c)
-        @test typeof(critids) == Vector{Vector{Int}}
-        @test length(critids) == k
-        for i = 1:k
-            @test length(critids[i]) == 1
-        end
-        critids = criticisms(c, 2)
-        @test typeof(critids) == Vector{Vector{Int}}
-        @test length(critids) == k
-        for i = 1:k
-            @test length(critids[i]) == 2
-        end
+        c = fuzzy_cmeans(X, numclusters, 2)
+        test(criticisms(c), numclusters, 1)
+        test(criticisms(c, 2), numclusters, 2)
+        test(criticisms(X, assignments(c), 2, :fuzzy_cmeans), numclusters, 2)
 
         S = -pairwise(Euclidean(), X, dims=2)
         S = S - diagm(0 => diag(S)) + median(S) * I
         c = affinityprop(S)
-        critids = criticisms(c, X)
-        @test typeof(critids) == Vector{Vector{Int}}
-        @test length(critids) == nclusters(c)
-        for i = 1:nclusters(c)
-            @test length(critids[i]) == 1
-        end
-        critids = prototypes(c, X, 2)
-        @test typeof(critids) == Vector{Vector{Int}}
-        @test length(critids) == nclusters(c)
-        for i = 1:nclusters(c)
-            @test length(critids[i]) == 2
-        end
+        numclusters = 2
+        test(criticisms(c, X), numclusters, 1)
+        test(criticisms(c, X, 2), numclusters, 2)
+        test(criticisms(X, assignments(c), 2, :fuzzy_cmeans), numclusters, 2)
     end
 end
