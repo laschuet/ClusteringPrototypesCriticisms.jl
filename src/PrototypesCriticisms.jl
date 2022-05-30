@@ -11,6 +11,14 @@ export criticisms,
         sqmmd, mmd²,
         witness
 
+abstract type AbstractMethod end
+
+struct MMDCritic <: AbstractMethod end
+struct KMeans <: AbstractMethod end
+struct KMedoids <: AbstractMethod end
+struct FuzzyCMeans <: AbstractMethod end
+struct AffinityPropagation <: AbstractMethod end
+
 """
     sqmmd(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel)
     mmd²(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel)
@@ -38,6 +46,53 @@ sqmmd(XX::AbstractMatrix{<:Real}, XY::AbstractMatrix{<:Real}, YY::AbstractMatrix
 
 # Alias
 const mmd² = sqmmd
+
+"""
+    prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, k::Kernel)
+
+Return the indices of `n` prototypes for every cluster in `X` using the kernel function `k`.
+The cluster assignments of the observations are specified by `ys`.
+
+`X` is expected to store observations in columns.
+"""
+function prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, k::Kernel)
+    protoids = Vector{Vector{Int}}()
+    numclusters = length(unique(ys))
+    for i = 1:numclusters
+        v = view(X, :, ys .== i)
+        push!(protoids, prototypes(v, k, n))
+    end
+    return protoids
+end
+
+"""
+    prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol)
+
+Return the indices of the `n` prototypes for every cluster in `X` using the
+method specified by the method's symbolic name `s`.
+The cluster assignments of the observations are specified by `ys`.
+
+`X` is expected to store observations in columns.
+`s` must be one of `:kmeans`, `:kmedoids`, and `:affinitypropagation`.
+"""
+function prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol)
+    return _prototypes(X, ys, n, _method(s))
+end
+
+# Return prototypes based on a combination of data set and cluster assignments
+function _prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, ::Union{KMeans, KMedoids, AffinityPropagation})
+    protoids = Vector{Vector{Int}}()
+    numclusters = length(unique(ys))
+    for i = 1:numclusters
+        v = view(X, :, ys .== i)
+        centroid = mean(v, dims=2)
+        D = pairwise(Euclidean(), v, centroid, dims=2)
+        permutation = partialsortperm(vec(D), 1:n)
+        parentinstances = parentindices(v)[2]
+        push!(protoids, parentinstances[permutation])
+    end
+    return protoids
+end
 
 """
     prototypes(X::AbstractMatrix{<:Real}, k::Kernel, n::Int)
@@ -203,6 +258,16 @@ function criticisms(c::AffinityPropResult, X::AbstractMatrix{<:Real}, n::Int=1; 
         push!(instances, parentinstances[permutation])
     end
     return instances
+end
+
+# Return a new instance of the method specified by the provided symbol
+function _method(s::Symbol)
+    s === :mmdcritic && return MMDCritic()
+    s === :kmeans && return KMeans()
+    s === :kmedoids && return KMedoids()
+    s === :fuzzycmeans && return FuzzyCMeans()
+    s === :affinitypropagation && return AffinityPropagation()
+    throw(ArgumentError("Invalid method: $s"))
 end
 
 # Return instances via their assignment costs

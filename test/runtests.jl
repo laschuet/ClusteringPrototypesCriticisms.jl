@@ -44,7 +44,11 @@ using Test
 
         K = kernelmatrix(k, X, obsdim=2)
         @test length(prototypes(K, 0)) == 0
-        @test Set(prototypes(K, n)) == Set(1:n)
+        protoids = prototypes(K, n)
+        @test Set(protoids) == Set(1:n)
+        protoids2 = prototypes(X, ones(n), n, k)
+        @test Set(protoids2) == Set(1:n)
+        @test protoids2 == protoids
 
         k = 2
         c = kmedoids(pairwise(Euclidean(), X, dims=2), k)
@@ -75,6 +79,13 @@ using Test
         for i = 1:k
             @test length(protoids[i]) == 2
         end
+        protoids2 = prototypes(X, assignments(c), 2, :kmeans)
+        @test typeof(protoids2) == Vector{Vector{Int}}
+        @test length(protoids2) == k
+        for i = 1:k
+            @test length(protoids2[i]) == 2
+        end
+        @test protoids2 == protoids
 
         k = 2
         c = fuzzy_cmeans(X, k, 2)
