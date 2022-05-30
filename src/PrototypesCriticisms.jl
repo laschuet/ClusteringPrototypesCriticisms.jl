@@ -75,22 +75,7 @@ The cluster assignments of the observations are specified by `ys`.
 `s` must be one of `:kmeans`, `:kmedoids`, and `:affinitypropagation`.
 """
 function prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol)
-    return _prototypes(X, ys, n, _method(s))
-end
-
-# Return prototypes based on a combination of data set and cluster assignments
-function _prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, ::Union{KMeans, KMedoids, AffinityPropagation})
-    protoids = Vector{Vector{Int}}()
-    numclusters = length(unique(ys))
-    for i = 1:numclusters
-        v = view(X, :, ys .== i)
-        centroid = mean(v, dims=2)
-        D = pairwise(Euclidean(), v, centroid, dims=2)
-        permutation = partialsortperm(vec(D), 1:n)
-        parentinstances = parentindices(v)[2]
-        push!(protoids, parentinstances[permutation])
-    end
-    return protoids
+    return _instances(X, ys, n, _method(s))
 end
 
 """
@@ -267,6 +252,20 @@ function _method(s::Symbol)
     s === :fuzzycmeans && return FuzzyCMeans()
     s === :affinitypropagation && return AffinityPropagation()
     throw(ArgumentError("Invalid method: $s"))
+end
+
+# Return instances based on a combination of data set and cluster assignments
+function _instances(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, ::Union{KMeans, KMedoids, AffinityPropagation})
+    instances = Vector{Vector{Int}}()
+    for i = 1:length(unique(ys))
+        v = view(X, :, ys .== i)
+        centroid = mean(v, dims=2)
+        distances = vec(pairwise(Euclidean(), v, centroid, dims=2))
+        permutation = partialsortperm(distances, 1:n)
+        parentinstances = parentindices(v)[2]
+        push!(instances, parentinstances[permutation])
+    end
+    return instances
 end
 
 # Return instances via their assignment costs
