@@ -18,10 +18,10 @@ Assumes that each data instance actually represents an image.
 # Keyword arguments
 - `outdir`: the location where the image files are saved.
 - `ext`: the file extension of the image files.
-- `useposprefix`: prepend the position of the data instances in `ids` to the name of the image file.
+- `usefullname`: whether to use more verbose information (id, class name) in name of the image file or not (index in `ids` only).
 
 """
-function saveasimage(d, ids; outdir="out", ext="png", useposprefix=true)
+function saveasimage(d, ids; outdir="out", ext="png", usefullname=false)
     mkpath(outdir)
     for (i, id) in enumerate(ids)
         image = convert2image(d, id)
@@ -30,8 +30,8 @@ function saveasimage(d, ids; outdir="out", ext="png", useposprefix=true)
             classnames = d.metadata["class_names"]
             classname = classnames[d.targets[id] + 1]
         end
-        prefix = useposprefix ? "$(i)_" : ""
-        save("$outdir/$prefix$("0" ^ (ndigits(length(d)) - ndigits(id)))$(id)_$classname.$ext", image)
+        name = usefullname ? "$("0" ^ (ndigits(length(d)) - ndigits(id)))$(id)_$classname" : "$i"
+        save("$outdir/$name.$ext", image)
     end
 end
 saveasimage(d; kwargs...) = saveasimage(d, 1:length(d); kwargs...)
@@ -84,7 +84,7 @@ function main()
 
     # Save whole data set as images
     @info "Save images..."
-    saveasimage(dataset, outdir="out/raw", useposprefix=false)
+    saveasimage(dataset, outdir="out/raw", usefullname=true)
 
     # Set main program parameters
     k = 10 # Number of clusters to compute
