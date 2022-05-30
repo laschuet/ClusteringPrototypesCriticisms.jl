@@ -115,7 +115,7 @@ function main()
     @info "Compute MMD-critic prototypes and criticisms..."
     ys = assignments(clustering)
     kernel = with_lengthscale(RBFKernel(), sqrt(size(embedding, 1)))
-    protoids = prototypes(embedding, ys, p, kernel)
+    protoids = prototypes(embedding, ys, kernel, p)
     critids = criticisms(embedding, ys, protoids, c, kernel)
     printclusters(protoids, headline="Prototype ids:")
     printclusters(critids, headline="Criticism ids:")
