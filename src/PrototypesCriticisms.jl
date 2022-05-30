@@ -20,34 +20,6 @@ struct FuzzyCMeans <: AbstractMethod end
 struct AffinityPropagation <: AbstractMethod end
 
 """
-    sqmmd(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel)
-    mmd²(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel)
-
-Compute the squared maximum mean discrepancy between `X` and `Y` using the kernel function `k`.
-
-`X` and `Y` are expected to store observations in columns.
-"""
-function sqmmd(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel)
-    XX = kernelmatrix(k, X, obsdim=2)
-    XY = kernelmatrix(k, X, Y, obsdim=2)
-    YY = kernelmatrix(k, Y, obsdim=2)
-    return sqmmd(XX, XY, YY)
-end
-
-"""
-    sqmmd(XX::AbstractMatrix{<:Real}, XY::AbstractMatrix{<:Real}, YY::AbstractMatrix{<:Real})
-    mmd²(XX::AbstractMatrix{<:Real}, XY::AbstractMatrix{<:Real}, YY::AbstractMatrix{<:Real})
-
-Compute the squared maximum mean discrepancy using the kernel matrices `XX`, `XY`, and `YY`.
-
-`XX` is the kernel matrix of the matrices `X` and `X` etc.
-"""
-sqmmd(XX::AbstractMatrix{<:Real}, XY::AbstractMatrix{<:Real}, YY::AbstractMatrix{<:Real}) = mean(XX) - 2 * mean(XY) + mean(YY)
-
-# Alias
-const mmd² = sqmmd
-
-"""
     prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, k::Kernel)
 
 Return the indices of the `n` prototypes for every cluster in `X` using the kernel function `k`.
@@ -158,15 +130,6 @@ function prototypes(c::AffinityPropResult, X::AbstractMatrix{<:Real}, n::Int=1; 
     end
     return instances
 end
-
-"""
-    witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel)
-
-Compute the witness function of `X` and `Y` at `z` using the kernel function `k`.
-
-`X` and `Y` are expected to store observations in columns, and `z` is a single observation.
-"""
-witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel) = mean(map(x -> k(z, x), eachcol(X))) - mean(map(y -> k(z, y), eachcol(Y)))
 
 """
     criticisms(X::AbstractMatrix{<:Real}, ys::AbstractVector{Int}, protoids::AbstractVector{Int}, n::Int, k::Kernel)
@@ -320,5 +283,42 @@ function _instances(W::AbstractMatrix{<:Real}, n::Int=1, rev::Bool=false)
     end
     return instances
 end
+
+"""
+    sqmmd(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel)
+    mmd²(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel)
+
+Compute the squared maximum mean discrepancy between `X` and `Y` using the kernel function `k`.
+
+`X` and `Y` are expected to store observations in columns.
+"""
+function sqmmd(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel)
+    XX = kernelmatrix(k, X, obsdim=2)
+    XY = kernelmatrix(k, X, Y, obsdim=2)
+    YY = kernelmatrix(k, Y, obsdim=2)
+    return sqmmd(XX, XY, YY)
+end
+
+"""
+    sqmmd(XX::AbstractMatrix{<:Real}, XY::AbstractMatrix{<:Real}, YY::AbstractMatrix{<:Real})
+    mmd²(XX::AbstractMatrix{<:Real}, XY::AbstractMatrix{<:Real}, YY::AbstractMatrix{<:Real})
+
+Compute the squared maximum mean discrepancy using the kernel matrices `XX`, `XY`, and `YY`.
+
+`XX` is the kernel matrix of the matrices `X` and `X` etc.
+"""
+sqmmd(XX::AbstractMatrix{<:Real}, XY::AbstractMatrix{<:Real}, YY::AbstractMatrix{<:Real}) = mean(XX) - 2 * mean(XY) + mean(YY)
+
+# Alias
+const mmd² = sqmmd
+
+"""
+    witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel)
+
+Compute the witness function of `X` and `Y` at `z` using the kernel function `k`.
+
+`X` and `Y` are expected to store observations in columns, and `z` is a single observation.
+"""
+witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel) = mean(map(x -> k(z, x), eachcol(X))) - mean(map(y -> k(z, y), eachcol(Y)))
 
 end # module
