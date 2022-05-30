@@ -74,9 +74,7 @@ The cluster assignments of the observations are specified by `ys`.
 `X` is expected to store observations in columns.
 `s` must be one of `:kmeans`, `:kmedoids`, and `:affinitypropagation`.
 """
-function prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol)
-    return _instances(X, ys, n, _method(s))
-end
+prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol) = _instances(X, ys, n, _method(s))
 
 """
     prototypes(X::AbstractMatrix{<:Real}, k::Kernel, n::Int)
@@ -211,9 +209,7 @@ The cluster assignments of the observations are specified by `ys`.
 `X` is expected to store observations in columns.
 `s` must be one of `:kmeans`, `:kmedoids`, and `:affinitypropagation`.
 """
-function criticisms(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol)
-    return _instances(X, ys, n, _method(s), true)
-end
+criticisms(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol) = _instances(X, ys, n, _method(s), true)
 
 """
     criticisms(c::KmedoidsResult, n::Int=1)
