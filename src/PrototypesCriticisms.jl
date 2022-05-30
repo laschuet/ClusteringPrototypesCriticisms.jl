@@ -145,7 +145,8 @@ function criticisms(X::AbstractMatrix{<:Real}, ys::AbstractVector{Int}, k::Kerne
     numclusters = length(unique(ys))
     for i = 1:numclusters
         v = view(X, :, ys .== i)
-        push!(critids, criticisms(v, k, protoids[i], n))
+        originalids = parentindices(v)[2]
+        push!(critids, originalids[criticisms(v, k, protoids[i], n)])
     end
     return critids
 end
