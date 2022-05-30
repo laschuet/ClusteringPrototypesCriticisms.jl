@@ -93,7 +93,7 @@ function main()
 
     # Cluster data using k-medoids
     @info "Cluster data..."
-    clustering = kmedoids(pairwise(Euclidean(), embedding), k)
+    clustering = kmedoids(pairwise(Euclidean(), embedding, dims=2), k)
 
     # Evaluate the clustering
     @info "Evaluate clustering..."
