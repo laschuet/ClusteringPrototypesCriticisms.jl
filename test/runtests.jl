@@ -39,21 +39,21 @@ end
             c = kmedoids(pairwise(Euclidean(), X, dims=2), numclusters)
             test(prototypes(c), numclusters, 1)
             test(prototypes(c, 2), numclusters, 2)
-            test(prototypes(X, assignments(c), 2, :kmedoids), numclusters, 2)
+            test(prototypes(X, assignments(c), :kmedoids, 2), numclusters, 2)
         end
 
         @testset "k-means" begin
             c = kmeans(X, numclusters)
             test(prototypes(c), numclusters, 1)
             test(prototypes(c, 2), numclusters, 2)
-            test(prototypes(X, assignments(c), 2, :kmeans), numclusters, 2)
+            test(prototypes(X, assignments(c), :kmeans, 2), numclusters, 2)
         end
 
         @testset "fuzzy c-means" begin
             c = fuzzy_cmeans(X, numclusters, 2)
             test(prototypes(c), numclusters, 1)
             test(prototypes(c, 2), numclusters, 2)
-            test(prototypes(X, c.weights, 2, :fuzzycmeans), numclusters, 2)
+            test(prototypes(X, c.weights, :fuzzycmeans, 2), numclusters, 2)
         end
 
         @testset "affinity propagation" begin
@@ -63,10 +63,10 @@ end
             numclusters = nclusters(c)
             test(prototypes(c, X), numclusters, 1)
             test(prototypes(c, X, 2), numclusters, 2)
-            test(prototypes(X, assignments(c), 2, :affinitypropagation), numclusters, 2)
+            test(prototypes(X, assignments(c), :affinitypropagation, 2), numclusters, 2)
         end
 
-        @test_throws ArgumentError prototypes(X, ones(Int, n), 2, :somenotexistingmethod)
+        @test_throws ArgumentError prototypes(X, ones(Int, n), :somenotexistingmethod)
     end
 
     @testset verbose=true "criticisms" begin
@@ -93,21 +93,21 @@ end
             c = kmedoids(pairwise(Euclidean(), X, dims=2), numclusters)
             test(criticisms(c), numclusters, 1)
             test(criticisms(c, 2), numclusters, 2)
-            test(criticisms(X, assignments(c), 2, :kmedoids), numclusters, 2)
+            test(criticisms(X, assignments(c), :kmedoids, 2), numclusters, 2)
         end
 
         @testset "k-means" begin
             c = kmeans(X, numclusters)
             test(criticisms(c), numclusters, 1)
             test(criticisms(c, 2), numclusters, 2)
-            test(criticisms(X, assignments(c), 2, :kmeans), numclusters, 2)
+            test(criticisms(X, assignments(c), :kmeans, 2), numclusters, 2)
         end
 
         @testset "fuzzy c-means" begin
             c = fuzzy_cmeans(X, numclusters, 2)
             test(criticisms(c), numclusters, 1)
             test(criticisms(c, 2), numclusters, 2)
-            test(criticisms(X, c.weights, 2, :fuzzycmeans), numclusters, 2)
+            test(criticisms(X, c.weights, :fuzzycmeans, 2), numclusters, 2)
         end
 
         @testset "affinity propagation" begin
@@ -117,10 +117,10 @@ end
             numclusters = nclusters(c)
             test(criticisms(c, X), numclusters, 1)
             test(criticisms(c, X, 2), numclusters, 2)
-            test(criticisms(X, assignments(c), 2, :affinitypropagation), numclusters, 2)
+            test(criticisms(X, assignments(c), :affinitypropagation, 2), numclusters, 2)
         end
 
-        @test_throws ArgumentError criticisms(X, ones(Int, n), 2, :somenotexistingmethod)
+        @test_throws ArgumentError criticisms(X, ones(Int, n), :somenotexistingmethod)
     end
 
     @testset "sqmmd (mmd²)" begin

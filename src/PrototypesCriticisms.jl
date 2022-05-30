@@ -76,7 +76,7 @@ function prototypes(K::AbstractMatrix{<:Real}, n::Int=1)
 end
 
 """
-    prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol)
+    prototypes(X::AbstractMatrix{<:Real}, y::Union{AbstractVector{Int}, AbstractMatrix{<:Real}}, s::Symbol, n::Int=1)
 
 Return the indices of the `n` prototypes for every cluster in `X` using the method specified by the method's symbolic name `s`.
 The cluster assignments of the observations are specified by `ys`.
@@ -84,7 +84,7 @@ The cluster assignments of the observations are specified by `ys`.
 `X` is expected to store observations in columns.
 `s` must be one of `:kmedoids`, `:kmeans`, `:fuzzycmeans`, and `:affinitypropagation`.
 """
-prototypes(X::AbstractMatrix{<:Real}, ys::Union{Vector{Int}, Matrix{<:Real}}, n::Int, s::Symbol) = _instances(X, ys, n, _method(s))
+prototypes(X::AbstractMatrix{<:Real}, y::Union{AbstractVector{Int}, AbstractMatrix{<:Real}}, s::Symbol, n::Int=1) = _instances(X, y, _method(s), n)
 
 """
     prototypes(c::KmedoidsResult, n::Int=1)
@@ -184,7 +184,7 @@ function criticisms(K::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n:
 end
 
 """
-    criticisms(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol)
+    criticisms(X::AbstractMatrix{<:Real}, y::Union{AbstractVector{Int}, AbstractMatrix{<:Real}}, s::Symbol, n::Int=1)
 
 Return the indices of the `n` criticisms for every cluster in `X` using the method specified by the method's symbolic name `s`.
 The cluster assignments of the observations are specified by `ys`.
@@ -192,7 +192,7 @@ The cluster assignments of the observations are specified by `ys`.
 `X` is expected to store observations in columns.
 `s` must be one of `:kmedoids`, `:kmeans`, `:fuzzycmeans`, and `:affinitypropagation`.
 """
-criticisms(X::AbstractMatrix{<:Real}, ys::Union{Vector{Int}, Matrix{<:Real}}, n::Int, s::Symbol) = _instances(X, ys, n, _method(s), true)
+criticisms(X::AbstractMatrix{<:Real}, y::Union{AbstractVector{Int}, AbstractMatrix{<:Real}}, s::Symbol, n::Int=1) = _instances(X, y, _method(s), n, true)
 
 """
     criticisms(c::KmedoidsResult, n::Int=1)
@@ -247,7 +247,7 @@ function _method(s::Symbol)
 end
 
 # Return instances based on a combination of data set and cluster assignments
-function _instances(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, ::Union{KMedoids, KMeans, AffinityPropagation}, rev::Bool=false)
+function _instances(X::AbstractMatrix{<:Real}, ys::Vector{Int}, ::Union{KMedoids, KMeans, AffinityPropagation}, n::Int=1, rev::Bool=false)
     instances = Vector{Vector{Int}}()
     for i = 1:length(unique(ys))
         v = view(X, :, ys .== i)
@@ -259,9 +259,9 @@ function _instances(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, ::Union{
     end
     return instances
 end
-function _instances(X::AbstractMatrix{<:Real}, W::Matrix{<:Real}, n::Int, ::FuzzyCMeans, rev::Bool=false)
+function _instances(X::AbstractMatrix{<:Real}, W::Matrix{<:Real}, ::FuzzyCMeans, n::Int=1, rev::Bool=false)
     hardassignments = vec(map(i -> i[2], argmax(W, dims=2)))
-    _instances(X, hardassignments, n, KMeans(), rev)
+    _instances(X, hardassignments, KMeans(), n, rev)
 end
 
 # Return instances via their assignment costs
