@@ -160,6 +160,13 @@ using Test
         for i = 1:k
             @test length(critids[i]) == 2
         end
+        critids2 = criticisms(X, assignments(c), 2, :kmeans)
+        @test typeof(critids2) == Vector{Vector{Int}}
+        @test length(critids2) == k
+        for i = 1:k
+            @test length(critids2[i]) == 2
+        end
+        @test critids2 == critids
 
         k = 2
         c = fuzzy_cmeans(X, k, 2)

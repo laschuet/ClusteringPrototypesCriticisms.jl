@@ -203,6 +203,19 @@ function criticisms(K::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n:
 end
 
 """
+    criticisms(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol)
+
+Return the indices of the `n` criticisms for every cluster in `X` using the method specified by the method's symbolic name `s`.
+The cluster assignments of the observations are specified by `ys`.
+
+`X` is expected to store observations in columns.
+`s` must be one of `:kmeans`, `:kmedoids`, and `:affinitypropagation`.
+"""
+function criticisms(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol)
+    return _instances(X, ys, n, _method(s), true)
+end
+
+"""
     criticisms(c::KmedoidsResult, n::Int=1)
 
 Return the indices of the `n` criticisms for every cluster of the k-medoids clustering `c`.
@@ -255,13 +268,13 @@ function _method(s::Symbol)
 end
 
 # Return instances based on a combination of data set and cluster assignments
-function _instances(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, ::Union{KMeans, KMedoids, AffinityPropagation})
+function _instances(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, ::Union{KMeans, KMedoids, AffinityPropagation}, rev::Bool=false)
     instances = Vector{Vector{Int}}()
     for i = 1:length(unique(ys))
         v = view(X, :, ys .== i)
         centroid = mean(v, dims=2)
         distances = vec(pairwise(Euclidean(), v, centroid, dims=2))
-        permutation = partialsortperm(distances, 1:n)
+        permutation = partialsortperm(distances, 1:n, rev=rev)
         parentinstances = parentindices(v)[2]
         push!(instances, parentinstances[permutation])
     end
