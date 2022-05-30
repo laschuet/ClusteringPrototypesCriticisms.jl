@@ -74,7 +74,7 @@ The cluster assignments of the observations are specified by `ys`.
 `X` is expected to store observations in columns.
 `s` must be one of `:kmedoids`, `:kmeans`, `:fuzzycmeans`, and `:affinitypropagation`.
 """
-prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol) = _instances(X, ys, n, _method(s))
+prototypes(X::AbstractMatrix{<:Real}, ys::Union{Vector{Int}, Matrix{<:Real}}, n::Int, s::Symbol) = _instances(X, ys, n, _method(s))
 
 """
     prototypes(X::AbstractMatrix{<:Real}, k::Kernel, n::Int)
@@ -209,7 +209,7 @@ The cluster assignments of the observations are specified by `ys`.
 `X` is expected to store observations in columns.
 `s` must be one of `:kmedoids`, `:kmeans`, `:fuzzycmeans`, and `:affinitypropagation`.
 """
-criticisms(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol) = _instances(X, ys, n, _method(s), true)
+criticisms(X::AbstractMatrix{<:Real}, ys::Union{Vector{Int}, Matrix{<:Real}}, n::Int, s::Symbol) = _instances(X, ys, n, _method(s), true)
 
 """
     criticisms(c::KmedoidsResult, n::Int=1)
@@ -264,7 +264,7 @@ function _method(s::Symbol)
 end
 
 # Return instances based on a combination of data set and cluster assignments
-function _instances(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, ::Union{KMedoids, KMeans, FuzzyCMeans, AffinityPropagation}, rev::Bool=false)
+function _instances(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, ::Union{KMedoids, KMeans, AffinityPropagation}, rev::Bool=false)
     instances = Vector{Vector{Int}}()
     for i = 1:length(unique(ys))
         v = view(X, :, ys .== i)
@@ -275,6 +275,10 @@ function _instances(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, ::Union{
         push!(instances, parentinstances[permutation])
     end
     return instances
+end
+function _instances(X::AbstractMatrix{<:Real}, W::Matrix{<:Real}, n::Int, ::FuzzyCMeans, rev::Bool=false)
+    hardassignments = vec(map(i -> i[2], argmax(W, dims=2)))
+    _instances(X, hardassignments, n, KMeans(), rev)
 end
 
 # Return instances via their assignment costs

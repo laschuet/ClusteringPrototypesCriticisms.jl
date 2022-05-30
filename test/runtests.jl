@@ -72,7 +72,7 @@ end
         c = fuzzy_cmeans(X, numclusters, 2)
         test(prototypes(c), numclusters, 1)
         test(prototypes(c, 2), numclusters, 2)
-        test(prototypes(X, assignments(c), 2, :fuzzycmeans), numclusters, 2)
+        test(prototypes(X, c.weights, 2, :fuzzycmeans), numclusters, 2)
 
         S = -pairwise(Euclidean(), X, dims=2)
         S = S - diagm(0 => diag(S)) + median(S) * I
@@ -109,14 +109,14 @@ end
         c = fuzzy_cmeans(X, numclusters, 2)
         test(criticisms(c), numclusters, 1)
         test(criticisms(c, 2), numclusters, 2)
-        test(criticisms(X, assignments(c), 2, :fuzzy_cmeans), numclusters, 2)
+        test(criticisms(X, c.weights, 2, :fuzzycmeans), numclusters, 2)
 
         S = -pairwise(Euclidean(), X, dims=2)
         S = S - diagm(0 => diag(S)) + median(S) * I
         c = affinityprop(S)
-        numclusters = 2
+        numclusters = nclusters(c)
         test(criticisms(c, X), numclusters, 1)
         test(criticisms(c, X, 2), numclusters, 2)
-        test(criticisms(X, assignments(c), 2, :fuzzy_cmeans), numclusters, 2)
+        test(criticisms(X, assignments(c), 2, :affinitypropagation), numclusters, 2)
     end
 end
