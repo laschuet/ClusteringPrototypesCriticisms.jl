@@ -35,6 +35,28 @@ using Test
     end
 
     @testset "prototypes" begin
+        function test(X, c, k, s)
+            protoids = prototypes(c)
+            @test typeof(protoids) == Vector{Vector{Int}}
+            @test length(protoids) == k
+            for i = 1:k
+                @test length(protoids[i]) == 1
+            end
+            protoids = prototypes(c, 2)
+            @test typeof(protoids) == Vector{Vector{Int}}
+            @test length(protoids) == k
+            for i = 1:k
+                @test length(protoids[i]) == 2
+            end
+            protoids2 = prototypes(X, assignments(c), 2, s)
+            @test typeof(protoids2) == Vector{Vector{Int}}
+            @test length(protoids2) == k
+            for i = 1:k
+                @test length(protoids2[i]) == 2
+            end
+            @test protoids2 == protoids
+        end
+
         n = 50
         X = rand(5, n)
         k = RBFKernel()
@@ -52,55 +74,15 @@ using Test
 
         k = 2
         c = kmedoids(pairwise(Euclidean(), X, dims=2), k)
-        protoids = prototypes(c)
-        @test typeof(protoids) == Vector{Vector{Int}}
-        @test length(protoids) == k
-        for i = 1:k
-            @test length(protoids[i]) == 1
-        end
-        protoids = prototypes(c, 2)
-        @test typeof(protoids) == Vector{Vector{Int}}
-        @test length(protoids) == k
-        for i = 1:k
-            @test length(protoids[i]) == 2
-        end
+        test(X, c, k, :kmedoids)
 
         k = 2
         c = kmeans(X, k)
-        protoids = prototypes(c)
-        @test typeof(protoids) == Vector{Vector{Int}}
-        @test length(protoids) == k
-        for i = 1:k
-            @test length(protoids[i]) == 1
-        end
-        protoids = prototypes(c, 2)
-        @test typeof(protoids) == Vector{Vector{Int}}
-        @test length(protoids) == k
-        for i = 1:k
-            @test length(protoids[i]) == 2
-        end
-        protoids2 = prototypes(X, assignments(c), 2, :kmeans)
-        @test typeof(protoids2) == Vector{Vector{Int}}
-        @test length(protoids2) == k
-        for i = 1:k
-            @test length(protoids2[i]) == 2
-        end
-        @test protoids2 == protoids
+        test(X, c, k, :kmeans)
 
         k = 2
         c = fuzzy_cmeans(X, k, 2)
-        protoids = prototypes(c)
-        @test typeof(protoids) == Vector{Vector{Int}}
-        @test length(protoids) == k
-        for i = 1:k
-            @test length(protoids[i]) == 1
-        end
-        protoids = prototypes(c, 2)
-        @test typeof(protoids) == Vector{Vector{Int}}
-        @test length(protoids) == k
-        for i = 1:k
-            @test length(protoids[i]) == 2
-        end
+        test(X, c, k, :fuzzycmeans)
 
         S = -pairwise(Euclidean(), X, dims=2)
         S = S - diagm(0 => diag(S)) + median(S) * I

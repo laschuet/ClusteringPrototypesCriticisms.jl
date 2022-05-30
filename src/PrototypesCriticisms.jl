@@ -264,7 +264,7 @@ function _method(s::Symbol)
 end
 
 # Return instances based on a combination of data set and cluster assignments
-function _instances(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, ::Union{KMeans, KMedoids, AffinityPropagation}, rev::Bool=false)
+function _instances(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, ::Union{KMedoids, KMeans, FuzzyCMeans, AffinityPropagation}, rev::Bool=false)
     instances = Vector{Vector{Int}}()
     for i = 1:length(unique(ys))
         v = view(X, :, ys .== i)
