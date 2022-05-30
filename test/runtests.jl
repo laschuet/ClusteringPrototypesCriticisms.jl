@@ -22,13 +22,15 @@ end
         numclusters = 2
 
         @testset "MMD-critic" begin
+            @test length(prototypes(X, k)) == 1
             @test length(prototypes(X, k, 0)) == 0
             @test Set(prototypes(X, k, n)) == Set(1:n)
             K = kernelmatrix(k, X, obsdim=2)
+            @test length(prototypes(K)) == 1
             @test length(prototypes(K, 0)) == 0
             protoids = prototypes(K, n)
             @test Set(protoids) == Set(1:n)
-            protoids2 = prototypes(X, ones(Int, n), n, k)
+            protoids2 = prototypes(X, ones(Int, n), k, n)
             @test Set(protoids2...) == Set(1:n)
             @test collect(protoids2...) == protoids
         end

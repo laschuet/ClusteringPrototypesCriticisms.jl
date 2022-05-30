@@ -20,14 +20,14 @@ struct FuzzyCMeans <: AbstractMethod end
 struct AffinityPropagation <: AbstractMethod end
 
 """
-    prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, k::Kernel)
+    prototypes(X::AbstractMatrix{<:Real}, ys::AbstractVector{Int}, k::Kernel, n::Int=1)
 
 Return the indices of the `n` prototypes for every cluster in `X` using the kernel function `k`.
 The cluster assignments of the observations are specified by `ys`.
 
 `X` is expected to store observations in columns.
 """
-function prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, k::Kernel)
+function prototypes(X::AbstractMatrix{<:Real}, ys::AbstractVector{Int}, k::Kernel, n::Int=1)
     protoids = Vector{Vector{Int}}()
     numclusters = length(unique(ys))
     for i = 1:numclusters
@@ -38,34 +38,23 @@ function prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, k::Kerne
 end
 
 """
-    prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol)
-
-Return the indices of the `n` prototypes for every cluster in `X` using the method specified by the method's symbolic name `s`.
-The cluster assignments of the observations are specified by `ys`.
-
-`X` is expected to store observations in columns.
-`s` must be one of `:kmedoids`, `:kmeans`, `:fuzzycmeans`, and `:affinitypropagation`.
-"""
-prototypes(X::AbstractMatrix{<:Real}, ys::Union{Vector{Int}, Matrix{<:Real}}, n::Int, s::Symbol) = _instances(X, ys, n, _method(s))
-
-"""
-    prototypes(X::AbstractMatrix{<:Real}, k::Kernel, n::Int)
+    prototypes(X::AbstractMatrix{<:Real}, k::Kernel, n::Int=1)
 
 Return the indices of the `n` prototypes in `X` using the kernel function `k`.
 
 `X` is expected to store observations in columns.
 """
-function prototypes(X::AbstractMatrix{<:Real}, k::Kernel, n::Int)
+function prototypes(X::AbstractMatrix{<:Real}, k::Kernel, n::Int=1)
     K = kernelmatrix(k, X, obsdim=2)
     return prototypes(K, n)
 end
 
 """
-    prototypes(K::AbstractMatrix{<:Real}, n::Int)
+    prototypes(K::AbstractMatrix{<:Real}, n::Int=1)
 
 Return the indices of the `n` prototypes using the kernel matrix `K`.
 """
-function prototypes(K::AbstractMatrix{<:Real}, n::Int)
+function prototypes(K::AbstractMatrix{<:Real}, n::Int=1)
     doubledkernelmeans = 2 * mean(K, dims=1)
     initialcandidates = 1:size(K, 2)
     protoids = Int[]
@@ -84,6 +73,17 @@ function prototypes(K::AbstractMatrix{<:Real}, n::Int)
     end
     return protoids
 end
+
+"""
+    prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol)
+
+Return the indices of the `n` prototypes for every cluster in `X` using the method specified by the method's symbolic name `s`.
+The cluster assignments of the observations are specified by `ys`.
+
+`X` is expected to store observations in columns.
+`s` must be one of `:kmedoids`, `:kmeans`, `:fuzzycmeans`, and `:affinitypropagation`.
+"""
+prototypes(X::AbstractMatrix{<:Real}, ys::Union{Vector{Int}, Matrix{<:Real}}, n::Int, s::Symbol) = _instances(X, ys, n, _method(s))
 
 """
     prototypes(c::KmedoidsResult, n::Int=1)
@@ -252,8 +252,8 @@ function _instances(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, ::Union{
         centroid = mean(v, dims=2)
         distances = vec(pairwise(Euclidean(), v, centroid, dims=2))
         permutation = partialsortperm(distances, 1:n, rev=rev)
-        parentinstances = parentindices(v)[2]
-        push!(instances, parentinstances[permutation])
+        originalinstances = parentindices(v)[2]
+        push!(instances, originalinstances[permutation])
     end
     return instances
 end
