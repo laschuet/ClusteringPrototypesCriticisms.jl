@@ -15,33 +15,6 @@ function test(instanceids, k, n)
 end
 
 @testset verbose=true "PrototypesCriticisms.jl" begin
-    @testset "sqmmd (mmd²)" begin
-        X = rand(5, 10)
-        k = RBFKernel()
-
-        @test sqmmd(X, X, k) ≈ 0
-
-        Y = X
-        XX = kernelmatrix(k, X, obsdim=2)
-        XY = kernelmatrix(k, X, Y, obsdim=2)
-        YY = kernelmatrix(k, Y, obsdim=2)
-        @test sqmmd(XX, XY, YY) ≈ 0
-
-        @test mmd²(X, X, k) == sqmmd(X, X, k)
-        @test mmd²(XX, XY, YY) == sqmmd(XX, XY, YY)
-    end
-
-    @testset "witness" begin
-        X = zeros(5, 10)
-        Y = ones(5, 10)
-        x = X[:, 1]
-        y = Y[:, 1]
-        k = RBFKernel()
-        @test witness(x, X, X, k) ≈ 0
-        @test witness(x, X, Y, k) > 0
-        @test witness(y, X, Y, k) < 0
-    end
-
     @testset verbose=true "prototypes" begin
         n = 50
         X = rand(5, n)
@@ -144,5 +117,32 @@ end
         end
 
         @test_throws ArgumentError criticisms(X, ones(Int, n), 2, :somenotexistingmethod)
+    end
+
+    @testset "sqmmd (mmd²)" begin
+        X = rand(5, 10)
+        k = RBFKernel()
+
+        @test sqmmd(X, X, k) ≈ 0
+
+        Y = X
+        XX = kernelmatrix(k, X, obsdim=2)
+        XY = kernelmatrix(k, X, Y, obsdim=2)
+        YY = kernelmatrix(k, Y, obsdim=2)
+        @test sqmmd(XX, XY, YY) ≈ 0
+
+        @test mmd²(X, X, k) == sqmmd(X, X, k)
+        @test mmd²(XX, XY, YY) == sqmmd(XX, XY, YY)
+    end
+
+    @testset "witness" begin
+        X = zeros(5, 10)
+        Y = ones(5, 10)
+        x = X[:, 1]
+        y = Y[:, 1]
+        k = RBFKernel()
+        @test witness(x, X, X, k) ≈ 0
+        @test witness(x, X, Y, k) > 0
+        @test witness(y, X, Y, k) < 0
     end
 end
