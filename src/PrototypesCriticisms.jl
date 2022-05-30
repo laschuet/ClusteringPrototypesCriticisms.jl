@@ -169,6 +169,35 @@ Compute the witness function of `X` and `Y` at `z` using the kernel function `k`
 witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}, k::Kernel) = mean(map(x -> k(z, x), eachcol(X))) - mean(map(y -> k(z, y), eachcol(Y)))
 
 """
+    criticisms(X::AbstractMatrix{<:Real}, ys::AbstractVector{Int}, protoids::AbstractVector{Int}, n::Int, k::Kernel)
+
+Return the indices of the `n` criticisms for every cluster in `X` using the prototype indices `protoids` and the kernel function `k`.
+The cluster assignments of the observations are specified by `ys`.
+
+`X` is expected to store observations in columns.
+"""
+function criticisms(X::AbstractMatrix{<:Real}, ys::Vector{Int}, protoids::AbstractVector{Vector{Int}}, n::Int, k::Kernel)
+    critids = Vector{Vector{Int}}()
+    numclusters = length(unique(ys))
+    for i = 1:numclusters
+        v = view(X, :, ys .== i)
+        push!(critids, criticisms(v, k, protoids[i], n))
+    end
+    return critids
+end
+
+"""
+    criticisms(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol)
+
+Return the indices of the `n` criticisms for every cluster in `X` using the method specified by the method's symbolic name `s`.
+The cluster assignments of the observations are specified by `ys`.
+
+`X` is expected to store observations in columns.
+`s` must be one of `:kmedoids`, `:kmeans`, `:fuzzycmeans`, and `:affinitypropagation`.
+"""
+criticisms(X::AbstractMatrix{<:Real}, ys::Union{Vector{Int}, Matrix{<:Real}}, n::Int, s::Symbol) = _instances(X, ys, n, _method(s), true)
+
+"""
     criticisms(X::AbstractMatrix{<:Real}, k::Kernel, protoids::AbstractVector{Int}, n::Int)
 
 Return the indices of the `n` criticisms in `X` using the prototype indices `protoids` and the kernel function `k`.
@@ -199,17 +228,6 @@ function criticisms(K::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n:
     end
     return critids
 end
-
-"""
-    criticisms(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol)
-
-Return the indices of the `n` criticisms for every cluster in `X` using the method specified by the method's symbolic name `s`.
-The cluster assignments of the observations are specified by `ys`.
-
-`X` is expected to store observations in columns.
-`s` must be one of `:kmedoids`, `:kmeans`, `:fuzzycmeans`, and `:affinitypropagation`.
-"""
-criticisms(X::AbstractMatrix{<:Real}, ys::Union{Vector{Int}, Matrix{<:Real}}, n::Int, s::Symbol) = _instances(X, ys, n, _method(s), true)
 
 """
     criticisms(c::KmedoidsResult, n::Int=1)
