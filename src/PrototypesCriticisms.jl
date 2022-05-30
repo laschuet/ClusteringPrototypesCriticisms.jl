@@ -50,7 +50,7 @@ const mmd² = sqmmd
 """
     prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, k::Kernel)
 
-Return the indices of `n` prototypes for every cluster in `X` using the kernel function `k`.
+Return the indices of the `n` prototypes for every cluster in `X` using the kernel function `k`.
 The cluster assignments of the observations are specified by `ys`.
 
 `X` is expected to store observations in columns.
@@ -68,8 +68,7 @@ end
 """
     prototypes(X::AbstractMatrix{<:Real}, ys::Vector{Int}, n::Int, s::Symbol)
 
-Return the indices of the `n` prototypes for every cluster in `X` using the
-method specified by the method's symbolic name `s`.
+Return the indices of the `n` prototypes for every cluster in `X` using the method specified by the method's symbolic name `s`.
 The cluster assignments of the observations are specified by `ys`.
 
 `X` is expected to store observations in columns.
@@ -97,7 +96,7 @@ end
 """
     prototypes(X::AbstractMatrix{<:Real}, k::Kernel, n::Int)
 
-Return the indices of `n` prototypes in `X` using the kernel function `k`.
+Return the indices of the `n` prototypes in `X` using the kernel function `k`.
 
 `X` is expected to store observations in columns.
 """
@@ -109,7 +108,7 @@ end
 """
     prototypes(K::AbstractMatrix{<:Real}, n::Int)
 
-Return the indices of `n` prototypes using the kernel matrix `K`.
+Return the indices of the `n` prototypes using the kernel matrix `K`.
 """
 function prototypes(K::AbstractMatrix{<:Real}, n::Int)
     doubledkernelmeans = 2 * mean(K, dims=1)
@@ -189,7 +188,7 @@ witness(z::AbstractVector{<:Real}, X::AbstractMatrix{<:Real}, Y::AbstractMatrix{
 """
     criticisms(X::AbstractMatrix{<:Real}, k::Kernel, protoids::AbstractVector{Int}, n::Int)
 
-Return the indices of `n` criticisms in `X` using the prototype indices `protoids` and kernel function `k`.
+Return the indices of the `n` criticisms in `X` using the prototype indices `protoids` and the kernel function `k`.
 
 `X` is expected to store observations in columns.
 """
@@ -201,7 +200,7 @@ end
 """
     criticisms(K::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n::Int)
 
-Return the indices of `n` criticisms using the prototype indices `indices` and the kernel matrix `K`.
+Return the indices of the `n` criticisms using the prototype indices `indices` and the kernel matrix `K`.
 """
 function criticisms(K::AbstractMatrix{<:Real}, protoids::AbstractVector{Int}, n::Int)
     kernelmeans = mean(K, dims=1)
@@ -260,7 +259,7 @@ function criticisms(c::AffinityPropResult, X::AbstractMatrix{<:Real}, n::Int=1; 
     return instances
 end
 
-# Return a new instance of the method specified by the provided symbol
+# Return a new instance of the method specified by the method's symbolic name
 function _method(s::Symbol)
     s === :mmdcritic && return MMDCritic()
     s === :kmeans && return KMeans()
