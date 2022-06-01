@@ -41,8 +41,28 @@ data set and the kind of method to be used for computing the prototypes and crit
 
 ## Installation
 
-The package has not been registered yet.
-
+The package has not been registered yet. Install the package:
 ```julia
-] add https://github.com/laschuet/PrototypesCriticisms.jl
+julia>]
+pkg> add https://github.com/laschuet/PrototypesCriticisms.jl
 ```
+
+Start using the package:
+```julia
+using PrototypesCriticisms
+```
+
+## Quick start
+
+You can easily read the API documentation by opening a Julia REPL session (open a
+terminal, then type and confirm `julia`) and the following statements:
+```julia
+julia>using PrototypesCriticisms
+julia>?
+help?>prototypes
+help?>criticisms
+help?>sqmmd
+help?>witness
+```
+
+Refer to the [examples](examples).
