@@ -76,6 +76,13 @@ function main()
     println("Criticisms implementation (affinity propagation)")
     @btime criticisms($clustering, $D, $c)
 
+    # DBSCAN
+    clustering = dbscan(D, 2)
+    println("Prototypes implementation (DBSCAN)")
+    @btime prototypes($clustering, $p)
+    println("Criticisms implementation (DBSCAN)")
+    @btime criticisms($clustering, $c)
+
     # MMD-critic
     kernel = with_lengthscale(RBFKernel(), sqrt(20))
     println("Naive prototypes implementation (MMD-critic)")

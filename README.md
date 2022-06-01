@@ -26,6 +26,7 @@ with the following methods:
 | k-means                     | ✓          | ✓          |
 | fuzzy c-means               | ✓          | ✓          |
 | affinity propagation        | ✓          | ✓          |
+| DBSCAN                      | ✓          | ✓          |
 
 In order to compute prototypes and criticisms for clusterings, we provide two approaches:
 1. Directly use a clustering result computed with the

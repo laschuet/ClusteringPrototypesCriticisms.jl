@@ -133,6 +133,13 @@ function prototypes(c::AffinityPropResult, X::AbstractMatrix{<:Real}, n::Int=1; 
 end
 
 """
+    prototypes(cs::AbstractVector{DbscanCluster}, n::Int=1)
+
+Return the indices of the `n` prototypes for every cluster of the DBSCAN clusters `cs`.
+"""
+prototypes(cs::AbstractVector{DbscanCluster}, n::Int=1) = map(c -> c.core_indices[1:n], cs)
+
+"""
     criticisms(X::AbstractMatrix{<:Real}, ys::AbstractVector{Int}, k::Kernel, protoids::AbstractVector{Vector{Int}}, n::Int=1)
 
 Return the indices of the `n` criticisms for every cluster in `X` using the prototype indices `protoids` and the kernel function `k`.
@@ -235,6 +242,13 @@ function criticisms(c::AffinityPropResult, X::AbstractMatrix{<:Real}, n::Int=1; 
     end
     return instances
 end
+
+"""
+    criticisms(cs::AbstractVector{DbscanCluster}, n::Int=1)
+
+Return the indices of the `n` criticisms for every cluster of the DBSCAN clusters `cs`.
+"""
+criticisms(cs::AbstractVector{DbscanCluster}, n::Int=1) = map(c -> c.boundary_indices[1:n], cs)
 
 # Return a new instance of the method specified by the method's symbolic name
 function _method(s::Symbol)
