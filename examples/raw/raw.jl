@@ -11,6 +11,9 @@ using Random
     plot(D, protoids, critids, axis, title; color=nothing)
 
 Produce plot for the data, prototypes, and criticisms.
+
+# Keyword arguments
+- `color`: the color to use for the data instances in `D`.
 """
 function plot(D, protoids, critids, axis; color=nothing)
     protos = D[:, vcat(protoids...)]
