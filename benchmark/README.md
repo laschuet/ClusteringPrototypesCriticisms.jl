@@ -4,7 +4,7 @@ Every method is benchmarked.
 
 ## Usage
 
-Directly run the benchmarks from the command line:
+`cd` into `benchmark`, and directly run the benchmarks from the command line:
 ```
 $ julia --project=. benchmarks.jl
 ```
