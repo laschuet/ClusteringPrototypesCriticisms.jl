@@ -19,7 +19,6 @@ Assumes that each data instance actually represents an image.
 - `outdir`: the location where the image files are saved.
 - `ext`: the file extension of the image files.
 - `usefullname`: whether to use more verbose information (id, class name) in name of the image file or not (index in `ids` only).
-
 """
 function saveasimage(d, ids; outdir="out", ext="png", usefullname=false)
     mkpath(outdir)
