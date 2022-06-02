@@ -51,20 +51,18 @@ by [CI][action-ci-url] processes.
 Open a [Julia REPL][julia-repl-url] and install the package:
 ```julia
 julia>]
-pkg> add https://github.com/laschuet/PrototypesCriticisms.jl
-```
-
-Start using the package:
-```julia
-using PrototypesCriticisms
+pkg>add https://github.com/laschuet/PrototypesCriticisms.jl
 ```
 
 ## Quick start
 
-You can easily read the API documentation by opening a [Julia
-REPL][julia-repl-url] and the following statements:
+Open a [Julia REPL][julia-repl-url] and start using the package:
 ```julia
 julia>using PrototypesCriticisms
+```
+
+Then you can easily read the API documentation:
+```julia
 julia>?
 help?>prototypes
 help?>criticisms
@@ -72,4 +70,4 @@ help?>sqmmd
 help?>witness
 ```
 
-Refer to the [examples](examples).
+We provide some usage [examples](examples).
