@@ -6,13 +6,7 @@ that contains a manifest. All package dependencies will be resolved during insta
 
 ## Usage
 
-`cd` into `examples/<example>`, start the Julia REPL by typing and confirming `julia`, and instantiate the environment:
-```julia
-julia> using Pkg; Pkg.activate("."); Pkg.instantiate()
-```
-Then run the example with `include("<example>.jl")`.
-
-Or `cd` into `examples/<example>`, and directly run the example from the command line:
+`cd` into `examples/<example>`, and directly run the example from the command line:
 ```
 $ julia --project=. <example>.jl
 ```
