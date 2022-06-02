@@ -31,8 +31,8 @@ end
             protoids = prototypes(K, n)
             @test Set(protoids) == Set(1:n)
             protoids2 = prototypes(X, ones(Int, n), k, n)
-            @test Set(protoids2...) == Set(1:n)
-            @test collect(protoids2...) == protoids
+            @test Set(protoids2[1]...) == Set(1:n)
+            @test collect(protoids2[1]...) == protoids
         end
 
         @testset "k-medoids" begin
