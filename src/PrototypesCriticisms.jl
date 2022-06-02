@@ -29,13 +29,16 @@ The cluster assignments of the observations are specified by `ys`.
 """
 function prototypes(X::AbstractMatrix{<:Real}, ys::AbstractVector{Int}, k::Kernel, n::Int=1)
     protoids = Vector{Vector{Int}}()
+    mappedprotoids = Vector{Vector{Int}}()
     numclusters = length(unique(ys))
     for i = 1:numclusters
         v = view(X, :, ys .== i)
+        clusterpids = prototypes(v, k, n)
         originalids = parentindices(v)[2]
-        push!(protoids, originalids[prototypes(v, k, n)])
+        push!(protoids, originalids[clusterpids])
+        push!(mappedprotoids, clusterpids)
     end
-    return protoids
+    return protoids, mappedprotoids
 end
 
 """
