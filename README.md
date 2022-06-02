@@ -1,12 +1,17 @@
 # PrototypesCriticisms.jl
 
-[![][action-img]][action-url]
-[![][codecov-img]][codecov-url]
-
 [action-img]: https://github.com/laschuet/PrototypesCriticisms.jl/actions/workflows/CI.yml/badge.svg?branch=main
 [action-url]: https://github.com/laschuet/PrototypesCriticisms.jl/actions/workflows/CI.yml?query=branch%3Amain
+[action-ci-url]: https://github.com/laschuet/PrototypesCriticisms.jl/actions/workflows/CI.yml
+[clustering.jl-url]: https://github.com/JuliaStats/Clustering.jl
 [codecov-img]: https://codecov.io/gh/laschuet/PrototypesCriticisms.jl/branch/main/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/laschuet/PrototypesCriticisms.jl
+[julia-install-url]: https://julialang.org/downloads
+[julia-repl-url]: https://docs.julialang.org/en/v1/stdlib/REPL
+[mmdcritic-url]: https://dl.acm.org/doi/10.5555/3157096.3157352
+
+[![][action-img]][action-url]
+[![][codecov-img]][codecov-url]
 
 A Julia package for computing prototypes and criticisms.
 
@@ -37,14 +42,11 @@ In order to compute prototypes and criticisms for clusterings, we provide two ap
 In order to compute prototypes and criticisms for raw data sets, provide the raw
 data set and the kind of method to be used for computing the prototypes and criticisms.
 
-[mmdcritic-url]: https://dl.acm.org/doi/10.5555/3157096.3157352
-[clustering.jl-url]: https://github.com/JuliaStats/Clustering.jl
-
 ## Installation
 
-We assume that you have a working [installation of Julia][juliainstall-url].
+We assume that you have a working [installation of Julia][julia-install-url].
 This package is tested on macOS and Ubuntu (x64 platform, Julia 1.7 and nightly)
-by [CI][actionsci-url] processes.
+by [CI][action-ci-url] processes.
 
 The package has not been registered yet. Install the package:
 ```julia
@@ -57,15 +59,10 @@ Start using the package:
 using PrototypesCriticisms
 ```
 
-[actionsci-url]: https://github.com/laschuet/PrototypesCriticisms.jl/actions/workflows/CI.yml
-[juliainstall-url]: https://julialang.org/downloads
-
 ## Quick start
 
-[juliarepl-url]: https://docs.julialang.org/en/v1/stdlib/REPL/
-
 You can easily read the API documentation by opening a [Julia
-REPL][juliarepl-url] session and the following statements:
+REPL][julia-repl-url] session and the following statements:
 ```julia
 julia>using PrototypesCriticisms
 julia>?
