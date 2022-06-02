@@ -1,9 +1,11 @@
 using CairoMakie
 using Clustering
+using DataFrames
 using Distances
 using Distributions
 using KernelFunctions
 using LinearAlgebra
+using MLDatasets: Iris
 using PrototypesCriticisms
 using Random
 
@@ -41,24 +43,20 @@ function main()
     update_theme!(font="Libertinus Serif")
     mkpath("out")
 
-    n = 40
-    D1 = [rand(Normal(1, 0.1), n) rand(Normal(1, 0.3), n)]
-    D2 = [rand(Normal(3, 0.3), n) rand(Normal(3, 0.3), n)]
-    D3 = [rand(Normal(4, 0.5), n) rand(Normal(2, 0.3), n)]
-    D4 = [rand(Normal(1.5, 0.1), n) rand(Normal(3, 0.1), n)]
-    D = [D1; D2; D3; D4]'
-
-    k = 4
+    D = Iris(as_df=false).features[1:2, :]
+    k = 3
     p = 1
     c = 1
 
     fig = Figure()
+    xlabel = "x"
+    ylabel = "y"
     axes = [
-        Axis(fig[1, 1], xgridvisible=false, ygridvisible=false, limits=(0, 6, 0, 4), xlabel="x", ylabel="y", title="k-medoids"),
-        Axis(fig[1, 2], xgridvisible=false, ygridvisible=false, limits=(0, 6, 0, 4), xlabel="x", ylabel="y", title="k-means"),
-        Axis(fig[1, 3], xgridvisible=false, ygridvisible=false, limits=(0, 6, 0, 4), xlabel="x", ylabel="y", title="fuzzy c-means"),
-        Axis(fig[2, 1], xgridvisible=false, ygridvisible=false, limits=(0, 6, 0, 4), xlabel="x", ylabel="y", title="affinity propagation"),
-        Axis(fig[2, 2], xgridvisible=false, ygridvisible=false, limits=(0, 6, 0, 4), xlabel="x", ylabel="y", title="MMD-critic"),
+        Axis(fig[1, 1], xgridvisible=false, ygridvisible=false, limits=(4, 8, 1, 5), xlabel=xlabel, ylabel=ylabel, title="k-medoids"),
+        Axis(fig[1, 2], xgridvisible=false, ygridvisible=false, limits=(4, 8, 1, 5), xlabel=xlabel, ylabel=ylabel, title="k-means"),
+        Axis(fig[1, 3], xgridvisible=false, ygridvisible=false, limits=(4, 8, 1, 5), xlabel=xlabel, ylabel=ylabel, title="fuzzy c-means"),
+        Axis(fig[2, 1], xgridvisible=false, ygridvisible=false, limits=(4, 8, 1, 5), xlabel=xlabel, ylabel=ylabel, title="affinity propagation"),
+        Axis(fig[2, 2], xgridvisible=false, ygridvisible=false, limits=(4, 8, 1, 5), xlabel=xlabel, ylabel=ylabel, title="MMD-critic"),
     ]
 
     # k-medoids
@@ -85,7 +83,7 @@ function main()
     # affinity propagation
     S = -pairwise(Euclidean(), D, dims=2)
     S = S - diagm(0 => diag(S)) + median(S) * I
-    clustering = affinityprop(S)
+    clustering = affinityprop(S, damp=0.95)
     protoids = prototypes(clustering, D, p)
     critids = criticisms(clustering, D, c)
     output(protoids, critids, "Affinity propagation")
