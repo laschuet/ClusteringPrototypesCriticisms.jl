@@ -3,6 +3,7 @@ using BenchmarkTools
 using Clustering
 using Distances
 using KernelFunctions
+using LinearAlgebra
 using Random
 
 function naiveprototypes(X::AbstractMatrix{<:Real}, n::Int, k::Kernel=RBFKernel())
