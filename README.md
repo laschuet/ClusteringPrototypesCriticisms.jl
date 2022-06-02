@@ -62,8 +62,10 @@ using PrototypesCriticisms
 
 ## Quick start
 
-You can easily read the API documentation by opening a Julia REPL session (open a
-terminal, then type and confirm `julia`) and the following statements:
+[juliarepl-url]: https://docs.julialang.org/en/v1/stdlib/REPL/
+
+You can easily read the API documentation by opening a [Julia
+REPL][juliarepl-url] session and the following statements:
 ```julia
 julia>using PrototypesCriticisms
 julia>?
