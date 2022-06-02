@@ -48,7 +48,7 @@ We assume that you have a working [installation of Julia][julia-install-url].
 This package is tested on macOS and Ubuntu (x64 platform, Julia 1.7 and nightly)
 by [CI][action-ci-url] processes.
 
-Open a [Julia REPL][julia-repl-url] session and install the package:
+Open a [Julia REPL][julia-repl-url] and install the package:
 ```julia
 julia>]
 pkg> add https://github.com/laschuet/PrototypesCriticisms.jl
@@ -62,7 +62,7 @@ using PrototypesCriticisms
 ## Quick start
 
 You can easily read the API documentation by opening a [Julia
-REPL][julia-repl-url] session and the following statements:
+REPL][julia-repl-url] and the following statements:
 ```julia
 julia>using PrototypesCriticisms
 julia>?
