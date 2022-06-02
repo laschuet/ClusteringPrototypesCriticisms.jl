@@ -1,10 +1,6 @@
 using CairoMakie
-using Clustering
 using DataFrames
-using Distances
-using Distributions
 using KernelFunctions
-using LinearAlgebra
 using MLDatasets: Iris
 using PrototypesCriticisms
 using Random
@@ -46,9 +42,13 @@ function main()
     # Load data set
     @info "Load data..."
     D = Iris(as_df=false).features[1:2, :]
+    ys = repeat(1:3, inner=50)
+    Y = zeros(size(D, 2), 3)
+    for i = 1:3
+        Y[(1 + 50 * (i - 1)):(50 * i), i] .= 1
+    end
 
     # Set main program parameters
-    k = 3 # Number of clusters to compute
     p = 1 # Number of prototypes to find
     c = 1 # Number of criticisms to find
 
@@ -67,39 +67,33 @@ function main()
 
     # Run k-medoids method
     @info "Run k-medoids..."
-    clustering = kmedoids(pairwise(Euclidean(), D), k)
     @info "Find prototypes and criticisms (k-medoids method)..."
-    protoids = prototypes(clustering, p)
-    critids = criticisms(clustering, c)
+    protoids = prototypes(D, ys, :kmedoids, p)
+    critids = criticisms(D, ys, :kmedoids, c)
     output(protoids, critids, "k-medoids")
     plot(D, protoids, critids, axes[1])
 
     # Run k-means method
     @info "Run k-means..."
-    clustering = kmeans(D, k)
     @info "Find prototypes and criticisms (k-means method)..."
-    protoids = prototypes(clustering, p)
-    critids = criticisms(clustering, c)
+    protoids = prototypes(D, ys, :kmeans, p)
+    critids = criticisms(D, ys, :kmeans, c)
     output(protoids, critids, "k-means")
     plot(D, protoids, critids, axes[2])
 
     # Run fuzzy c-means method
     @info "Run fuzzy c-means..."
-    clustering = fuzzy_cmeans(D, k, 2)
     @info "Find prototypes and criticisms (fuzzy c-means method)..."
-    protoids = prototypes(clustering, p)
-    critids = criticisms(clustering, c)
+    protoids = prototypes(D, Y, :fuzzycmeans, p)
+    critids = criticisms(D, Y, :fuzzycmeans, c)
     output(protoids, critids, "Fuzzy c-means")
     plot(D, protoids, critids, axes[3])
 
     # Run affinity propagation method
     @info "Run affinity propagation..."
-    S = -pairwise(Euclidean(), D, dims=2)
-    S = S - diagm(0 => diag(S)) + median(S) * I
-    clustering = affinityprop(S, damp=0.95)
     @info "Find prototypes and criticisms (affinity propagation method)..."
-    protoids = prototypes(clustering, D, p)
-    critids = criticisms(clustering, D, c)
+    protoids = prototypes(D, ys, :affinitypropagation, p)
+    critids = criticisms(D, ys, :affinitypropagation, c)
     output(protoids, critids, "Affinity propagation")
     plot(D, protoids, critids, axes[4])
 
@@ -107,8 +101,8 @@ function main()
     @info "Run MMD-critic..."
     kernel = with_lengthscale(RBFKernel(), sqrt(size(D, 1)))
     @info "Find prototypes and criticisms (MMD-critic method)..."
-    protoids = prototypes(D, kernel, k)
-    critids = criticisms(D, kernel, protoids, k)
+    protoids, mappedprotoids = prototypes(D, ys, kernel, p)
+    critids = criticisms(D, ys, kernel, mappedprotoids, c)
     output(protoids, critids, "MMD-critic")
     plot(D, protoids, critids, axes[5])
 
