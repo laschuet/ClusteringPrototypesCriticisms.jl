@@ -136,6 +136,22 @@ function prototypes(c::AffinityPropResult, X::AbstractMatrix{<:Real}, n::Int=1; 
 end
 
 """
+    prototypes(c::Union{KmedoidsResult, KmeansResult, AffinityPropagation}, X::AbstractMatrix{<:Real}, k::Kernel, n::Int=1)
+
+Return the indices of the `n` prototypes in `X` using the kernel function `k` and the clustering `c`.
+
+`X` is expected to store observations in columns.
+"""
+function prototypes(c::Union{KmedoidsResult, KmeansResult, AffinityPropResult}, X::AbstractMatrix{<:Real}, k::Kernel, n::Int=1)
+    ys = assignments(c)
+    return prototypes(X, ys, k, n)
+end
+function prototypes(c::FuzzyCMeansResult, X::AbstractMatrix{<:Real}, k::Kernel, n::Int=1)
+    ys = vec(map(i -> i[2], argmax(c.weights, dims=2)))
+    return prototypes(X, ys, k, n)
+end
+
+"""
     criticisms(X::AbstractMatrix{<:Real}, ys::AbstractVector{Int}, k::Kernel, protoids::AbstractVector{Vector{Int}}, n::Int=1)
 
 Return the indices of the `n` criticisms for every cluster in `X` using the prototype indices `protoids` and the kernel function `k`.
@@ -237,6 +253,22 @@ function criticisms(c::AffinityPropResult, X::AbstractMatrix{<:Real}, n::Int=1; 
         push!(instances, parentinstances[permutation])
     end
     return instances
+end
+
+"""
+    criticisms(c::Union{KmedoidsResult, KmeansResult, AffinityPropResult}, X::AbstractMatrix{<:Real}, k::Kernel, protoids::AbstractVector{Vector{Int}}, n::Int=1)
+
+Return the indices of the `n` criticisms in `X` using the prototype indices `protoids`, the kernel function `k`, and the clustering `c`.
+
+`X` is expected to store observations in columns.
+"""
+function criticisms(c::Union{KmedoidsResult, KmeansResult, AffinityPropResult}, X::AbstractMatrix{<:Real}, k::Kernel, protoids::AbstractVector{Vector{Int}}, n::Int=1)
+    ys = assignments(c)
+    return criticisms(X, ys, k, protoids, n)
+end
+function criticisms(c::FuzzyCMeansResult, X::AbstractMatrix{<:Real}, k::Kernel, protoids::AbstractVector{Vector{Int}}, n::Int=1)
+    ys = vec(map(i -> i[2], argmax(c.weights, dims=2)))
+    return criticisms(X, ys, k, protoids, n)
 end
 
 # Return a new instance of the method specified by the method's symbolic name
