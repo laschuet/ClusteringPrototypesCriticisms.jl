@@ -16,10 +16,9 @@
 A Julia package for computing prototypes and criticisms.
 
 Currently, there is a focus on finding prototypes and criticisms in clusterings.
-Nonetheless, this package can be used to find prototypes and criticisms in raw
-data sets. In this case, the clustering of the raw data set is an intermediate
-step that is hidden from the user. However, there are also other methods
-implemented that do not cluster the raw data set at all.
+Nonetheless, this package can also be used to find prototypes and criticisms in
+data sets. In this case, the data set needs to be clustered first. However,
+there are also other methods implemented that work without clustering at all.
 
 In particular, we currently support the selection of prototypes and criticisms
 with the following methods:
