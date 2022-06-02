@@ -42,6 +42,10 @@ data set and the kind of method to be used for computing the prototypes and crit
 
 ## Installation
 
+We assume that you have a working [installation of Julia](juliainstall-url).
+This package is tested on macOS and Ubuntu (x64 platform, Julia 1.7 and nightly)
+by [CI](.github/workflows/CI.yml) processes.
+
 The package has not been registered yet. Install the package:
 ```julia
 julia>]
@@ -52,6 +56,8 @@ Start using the package:
 ```julia
 using PrototypesCriticisms
 ```
+
+[juliainstall-url]: https://julialang.org/downloads
 
 ## Quick start
 
