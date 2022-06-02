@@ -8,23 +8,16 @@ using PrototypesCriticisms
 using Random
 
 """
-    plot(D, protoids, critids, axis, title; color=nothing)
+    plot(D, protoids, critids, axis)
 
 Produce plot for the data, prototypes, and criticisms.
-
-# Keyword arguments
-- `color`: the color to use for the data instances in `D`.
 """
-function plot(D, protoids, critids, axis; color=nothing)
+function plot(D, protoids, critids, axis)
     protos = D[:, vcat(protoids...)]
     crits = D[:, vcat(critids...)]
-    if isnothing(color)
-        scatter!(axis, D[1, :], D[2, :], markersize=4)
-    else
-        scatter!(axis, D[1, :], D[2, :], color=color, markersize=4)
-    end
-    scatter!(axis, protos[1, :], protos[2, :], color=:red, marker=:cross)
-    scatter!(axis, crits[1, :], crits[2, :], color=:green, marker=:xcross)
+    scatter!(axis, D[1, :], D[2, :], color=(:grey, 0.75), markersize=4)
+    scatter!(axis, protos[1, :], protos[2, :], marker=:rect, markersize=8)
+    scatter!(axis, crits[1, :], crits[2, :], marker=:xcross, markersize=12)
 end
 
 """
@@ -73,21 +66,21 @@ function main()
     protoids = prototypes(clustering, p)
     critids = criticisms(clustering, c)
     output(protoids, critids, "k-medoids")
-    plot(D, protoids, critids, axes[1], color=assignments(clustering))
+    plot(D, protoids, critids, axes[1])
 
     # k-means
     clustering = kmeans(D, k)
     protoids = prototypes(clustering, p)
     critids = criticisms(clustering, c)
     output(protoids, critids, "k-means")
-    plot(D, protoids, critids, axes[2], color=assignments(clustering))
+    plot(D, protoids, critids, axes[2])
 
     # fuzzy c-means
     clustering = fuzzy_cmeans(D, k, 2)
     protoids = prototypes(clustering, p)
     critids = criticisms(clustering, c)
     output(protoids, critids, "Fuzzy c-means")
-    plot(D, protoids, critids, axes[3], color=map(i -> i[2], argmax(clustering.weights, dims=2)))
+    plot(D, protoids, critids, axes[3])
 
     # affinity propagation
     S = -pairwise(Euclidean(), D, dims=2)
@@ -96,14 +89,14 @@ function main()
     protoids = prototypes(clustering, D, p)
     critids = criticisms(clustering, D, c)
     output(protoids, critids, "Affinity propagation")
-    plot(D, protoids, critids, axes[4], color=assignments(clustering))
+    plot(D, protoids, critids, axes[4])
 
     # MMD-critic
     kernel = with_lengthscale(RBFKernel(), sqrt(size(D, 1)))
     protoids = prototypes(D, kernel, k)
     critids = criticisms(D, kernel, protoids, k)
     output(protoids, critids, "MMD-critic")
-    plot(D, protoids, critids, axes[5], color=:grey)
+    plot(D, protoids, critids, axes[5])
 
     save("out/raw.pdf", fig)
 end
