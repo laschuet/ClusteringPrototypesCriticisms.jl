@@ -48,7 +48,7 @@ We assume that you have a working [installation of Julia][julia-install-url].
 This package is tested on macOS and Ubuntu (x64 platform, Julia 1.7 and nightly)
 by [CI][action-ci-url] processes.
 
-The package has not been registered yet. Install the package:
+Open a [Julia REPL][julia-repl-url] session and install the package:
 ```julia
 julia>]
 pkg> add https://github.com/laschuet/PrototypesCriticisms.jl
