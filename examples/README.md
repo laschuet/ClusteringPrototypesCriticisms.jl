@@ -1,8 +1,10 @@
 # Examples
 
-Every example comes with its own [Julia
-project](https://pkgdocs.julialang.org/v1/environments/#Using-someone-else's-project)
-that contains a manifest. All package dependencies will be resolved during instantiation.
+[julia-project-url]: https://pkgdocs.julialang.org/v1/environments/#Using-someone-else's-project
+
+Every example comes with its own [Julia project][julia-project-url] that
+contains a manifest. All package dependencies will be resolved during
+instantiation.
 
 ## Usage
 
