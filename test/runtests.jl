@@ -56,11 +56,6 @@ end
             test(prototypes(X, c.weights, :fuzzycmeans, 2), numclusters, 2)
         end
 
-        @testset "DBSCAN" begin
-            c = dbscan(X, 0.01)
-            test(prototypes(c), n, 1)
-        end
-
         @testset "affinity propagation" begin
             S = -pairwise(Euclidean(), X, dims=2)
             S = S - diagm(0 => diag(S)) + median(S) * I
@@ -123,11 +118,6 @@ end
             test(criticisms(c, X), numclusters, 1)
             test(criticisms(c, X, 2), numclusters, 2)
             test(criticisms(X, assignments(c), :affinitypropagation, 2), numclusters, 2)
-        end
-
-        @testset "DBSCAN" begin
-            c = dbscan(X, 0.01)
-            test(criticisms(c), n, 1)
         end
 
         @test_throws ArgumentError criticisms(X, ones(Int, n), :somenotexistingmethod)
