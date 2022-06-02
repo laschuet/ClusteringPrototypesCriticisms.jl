@@ -60,8 +60,9 @@ function main()
     axes = [
         Axis(fig[1, 1], xgridvisible=false, ygridvisible=false, limits=(0, 6, 0, 4), xlabel="x", ylabel="y", title="k-medoids"),
         Axis(fig[1, 2], xgridvisible=false, ygridvisible=false, limits=(0, 6, 0, 4), xlabel="x", ylabel="y", title="k-means"),
-        Axis(fig[2, 1], xgridvisible=false, ygridvisible=false, limits=(0, 6, 0, 4), xlabel="x", ylabel="y", title="fuzzy c-means"),
-        Axis(fig[2, 2], xgridvisible=false, ygridvisible=false, limits=(0, 6, 0, 4), xlabel="x", ylabel="y", title="affinity propagation"),
+        Axis(fig[1, 3], xgridvisible=false, ygridvisible=false, limits=(0, 6, 0, 4), xlabel="x", ylabel="y", title="fuzzy c-means"),
+        Axis(fig[2, 1], xgridvisible=false, ygridvisible=false, limits=(0, 6, 0, 4), xlabel="x", ylabel="y", title="affinity propagation"),
+        Axis(fig[2, 2], xgridvisible=false, ygridvisible=false, limits=(0, 6, 0, 4), xlabel="x", ylabel="y", title="MMD-critic"),
     ]
 
     # k-medoids
@@ -95,13 +96,11 @@ function main()
     plot(D, protoids, critids, axes[4], color=assignments(clustering))
 
     # MMD-critic
-    #=
     kernel = with_lengthscale(RBFKernel(), sqrt(size(D, 1)))
     protoids = prototypes(D, kernel, k)
     critids = criticisms(D, kernel, protoids, k)
     output(protoids, critids, "MMD-critic")
     plot(D, protoids, critids, axes[5], color=:grey)
-    =#
 
     save("out/raw.pdf", fig)
 end
