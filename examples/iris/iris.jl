@@ -96,7 +96,7 @@ function main()
     output(protoids, critids, "MMD-critic")
     plot(D, protoids, critids, axes[5])
 
-    save("out/raw.pdf", fig)
+    save("out/iris.pdf", fig)
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
