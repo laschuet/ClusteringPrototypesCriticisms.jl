@@ -53,7 +53,7 @@ julia>]
 pkg>add https://github.com/laschuet/PrototypesCriticisms.jl
 ```
 
-## Quick start
+## Getting started
 
 Open a [Julia REPL][julia-repl-url] and start using the package:
 ```julia
@@ -68,5 +68,8 @@ help?>criticisms
 help?>sqmmd
 help?>witness
 ```
+Alternatively, we invite you to take a quick look at the [source code](src).
 
-We provide some usage [examples](examples).
+## Examples
+
+We also provide some usage [examples](examples).
