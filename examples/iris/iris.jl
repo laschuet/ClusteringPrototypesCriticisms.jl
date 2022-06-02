@@ -43,11 +43,17 @@ function main()
     update_theme!(font="Libertinus Serif")
     mkpath("out")
 
+    # Load data set
+    @info "Load data..."
     D = Iris(as_df=false).features[1:2, :]
-    k = 3
-    p = 1
-    c = 1
 
+    # Set main program parameters
+    k = 3 # Number of clusters to compute
+    p = 1 # Number of prototypes to find
+    c = 1 # Number of criticisms to find
+
+    # Prepare final plot
+    @info "Prepare plot..."
     fig = Figure()
     xlabel = "x"
     ylabel = "y"
@@ -59,38 +65,48 @@ function main()
         Axis(fig[2, 2], xgridvisible=false, ygridvisible=false, limits=(4, 8, 1, 5), xlabel=xlabel, ylabel=ylabel, title="MMD-critic"),
     ]
 
-    # k-medoids
+    # Run k-medoids method
+    @info "Run k-medoids..."
     clustering = kmedoids(pairwise(Euclidean(), D), k)
+    @info "Find prototypes and criticisms (k-medoids method)..."
     protoids = prototypes(clustering, p)
     critids = criticisms(clustering, c)
     output(protoids, critids, "k-medoids")
     plot(D, protoids, critids, axes[1])
 
-    # k-means
+    # Run k-means method
+    @info "Run k-means..."
     clustering = kmeans(D, k)
+    @info "Find prototypes and criticisms (k-means method)..."
     protoids = prototypes(clustering, p)
     critids = criticisms(clustering, c)
     output(protoids, critids, "k-means")
     plot(D, protoids, critids, axes[2])
 
-    # fuzzy c-means
+    # Run fuzzy c-means method
+    @info "Run fuzzy c-means..."
     clustering = fuzzy_cmeans(D, k, 2)
+    @info "Find prototypes and criticisms (fuzzy c-means method)..."
     protoids = prototypes(clustering, p)
     critids = criticisms(clustering, c)
     output(protoids, critids, "Fuzzy c-means")
     plot(D, protoids, critids, axes[3])
 
-    # affinity propagation
+    # Run affinity propagation method
+    @info "Run affinity propagation..."
     S = -pairwise(Euclidean(), D, dims=2)
     S = S - diagm(0 => diag(S)) + median(S) * I
     clustering = affinityprop(S, damp=0.95)
+    @info "Find prototypes and criticisms (affinity propagation method)..."
     protoids = prototypes(clustering, D, p)
     critids = criticisms(clustering, D, c)
     output(protoids, critids, "Affinity propagation")
     plot(D, protoids, critids, axes[4])
 
-    # MMD-critic
+    # Run MMD-critic method
+    @info "Run MMD-critic..."
     kernel = with_lengthscale(RBFKernel(), sqrt(size(D, 1)))
+    @info "Find prototypes and criticisms (MMD-critic method)..."
     protoids = prototypes(D, kernel, k)
     critids = criticisms(D, kernel, protoids, k)
     output(protoids, critids, "MMD-critic")

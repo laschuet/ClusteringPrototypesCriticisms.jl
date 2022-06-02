@@ -76,7 +76,7 @@ Run the example.
 function main()
     Random.seed!(42)
 
-    # Load dataset and the corresponding pre-trained image embeddings
+    # Load data set and the corresponding pre-trained image embeddings
     @info "Load data..."
     dataset = CIFAR10()
     embedding = load("cifar-10_train_embedding_vgg-19.jld2", "embedding")'
