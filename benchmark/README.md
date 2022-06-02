@@ -1,6 +1,8 @@
 # Benchmark
 
-Every method is benchmarked.
+Every method is benchmarked. This benchmark comes with its own Julia project
+that contains a manifest. All package dependencies will be resolved during
+instantiation.
 
 ## Usage
 
