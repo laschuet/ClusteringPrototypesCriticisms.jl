@@ -2,8 +2,9 @@ using Clustering
 using ClusteringPrototypesCriticisms
 using Distances
 using FileIO
+using ImageShow
 using KernelFunctions
-using MLDatasets
+using MLDatasets: CIFAR10, convert2image
 using Random
 
 """
