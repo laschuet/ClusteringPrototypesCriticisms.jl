@@ -16,5 +16,4 @@ $ julia --project=. <example>.jl
 ## List
 
 - [cifar-10](cifar10): Explaining the clustering of the CIFAR-10 data set with prototypes and criticisms.
-- [iris](iris): Explaining the raw Iris flower data set with prototypes
-  and criticisms.
+- [iris](iris): Explaining the clustering of the Iris flower data set with prototypes and criticisms.

@@ -1,8 +1,8 @@
 using CairoMakie
+using ClusteringPrototypesCriticisms
 using DataFrames
 using KernelFunctions
 using MLDatasets: Iris
-using PrototypesCriticisms
 using Random
 
 """

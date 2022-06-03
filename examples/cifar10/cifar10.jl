@@ -1,9 +1,9 @@
 using Clustering
+using ClusteringPrototypesCriticisms
 using Distances
 using FileIO
 using KernelFunctions
 using MLDatasets
-using PrototypesCriticisms
 using Random
 
 """

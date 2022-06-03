@@ -1,11 +1,11 @@
-# PrototypesCriticisms.jl
+# ClusteringPrototypesCriticisms.jl
 
-[action-img]: https://github.com/laschuet/PrototypesCriticisms.jl/actions/workflows/CI.yml/badge.svg?branch=main
-[action-url]: https://github.com/laschuet/PrototypesCriticisms.jl/actions/workflows/CI.yml?query=branch%3Amain
-[action-ci-url]: https://github.com/laschuet/PrototypesCriticisms.jl/actions/workflows/CI.yml
+[action-img]: https://github.com/laschuet/ClusteringPrototypesCriticisms.jl/actions/workflows/CI.yml/badge.svg?branch=main
+[action-url]: https://github.com/laschuet/ClusteringPrototypesCriticisms.jl/actions/workflows/CI.yml?query=branch%3Amain
+[action-ci-url]: https://github.com/laschuet/ClusteringPrototypesCriticisms.jl/actions/workflows/CI.yml
 [clustering.jl-url]: https://github.com/JuliaStats/Clustering.jl
-[codecov-img]: https://codecov.io/gh/laschuet/PrototypesCriticisms.jl/branch/main/graph/badge.svg
-[codecov-url]: https://codecov.io/gh/laschuet/PrototypesCriticisms.jl
+[codecov-img]: https://codecov.io/gh/laschuet/ClusteringPrototypesCriticisms.jl/branch/main/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/laschuet/ClusteringPrototypesCriticisms.jl
 [julia-install-url]: https://julialang.org/downloads
 [julia-repl-url]: https://docs.julialang.org/en/v1/stdlib/REPL
 [mmdcritic-url]: https://dl.acm.org/doi/10.5555/3157096.3157352
@@ -13,12 +13,7 @@
 [![][action-img]][action-url]
 [![][codecov-img]][codecov-url]
 
-A Julia package for computing prototypes and criticisms.
-
-Currently, there is a focus on finding prototypes and criticisms in clusterings.
-Nonetheless, this package can also be used to find prototypes and criticisms in
-data sets. In this case, the data set needs to be clustered first. However,
-there are also other methods implemented that work without clustering at all.
+A Julia package for computing clustering prototypes and criticisms.
 
 In particular, we currently support the selection of prototypes and criticisms
 with the following methods:
@@ -37,9 +32,6 @@ In order to compute prototypes and criticisms for clusterings, we provide two ap
 2. Provide the raw data set, the clustering assignments of the data instances,
     and the kind of method to be used for computing the prototypes and criticisms.
 
-In order to compute prototypes and criticisms for raw data sets, provide the raw
-data set and the kind of method to be used for computing the prototypes and criticisms.
-
 ## Installation
 
 We assume that you have a working [installation of Julia][julia-install-url].
@@ -49,14 +41,14 @@ by [CI][action-ci-url] processes.
 Open a [Julia REPL][julia-repl-url] and install the package:
 ```julia
 julia>]
-pkg>add https://github.com/laschuet/PrototypesCriticisms.jl
+pkg>add https://github.com/laschuet/ClusteringPrototypesCriticisms.jl
 ```
 
 ## Getting started
 
 Open a [Julia REPL][julia-repl-url] and start using the package:
 ```julia
-julia>using PrototypesCriticisms
+julia>using ClusteringPrototypesCriticisms
 ```
 
 Then you can easily read the API documentation:

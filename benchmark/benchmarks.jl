@@ -1,6 +1,6 @@
-using PrototypesCriticisms
 using BenchmarkTools
 using Clustering
+using ClusteringPrototypesCriticisms
 using Distances
 using KernelFunctions
 using LinearAlgebra

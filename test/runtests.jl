@@ -1,4 +1,4 @@
-using PrototypesCriticisms
+using ClusteringPrototypesCriticisms
 using Clustering
 using Distances
 using KernelFunctions
@@ -14,7 +14,7 @@ function test(instanceids, k, n)
     end
 end
 
-@testset verbose=true "PrototypesCriticisms.jl" begin
+@testset verbose=true "ClusteringPrototypesCriticisms.jl" begin
     @testset verbose=true "prototypes" begin
         n = 50
         X = rand(5, n)
@@ -33,6 +33,24 @@ end
             protoids2, _ = prototypes(X, ones(Int, n), k, n)
             @test Set(protoids2...) == Set(1:n)
             @test collect(protoids2...) == protoids
+
+            c = kmedoids(pairwise(Euclidean(), X, dims=2), numclusters)
+            protoids, _ = prototypes(c, X, k)
+            test(protoids, numclusters, 1)
+
+            c = kmeans(X, numclusters)
+            protoids, _ = prototypes(c, X, k)
+            test(protoids, numclusters, 1)
+
+            c = fuzzy_cmeans(X, numclusters, 2)
+            protoids, _ = prototypes(c, X, k)
+            test(protoids, numclusters, 1)
+
+            S = -pairwise(Euclidean(), X, dims=2)
+            S = S - diagm(0 => diag(S)) + median(S) * I
+            c = affinityprop(S)
+            protoids, _ = prototypes(c, X, k)
+            test(protoids, nclusters(c), 1)
         end
 
         @testset "k-medoids" begin
@@ -60,10 +78,9 @@ end
             S = -pairwise(Euclidean(), X, dims=2)
             S = S - diagm(0 => diag(S)) + median(S) * I
             c = affinityprop(S)
-            numclusters = nclusters(c)
-            test(prototypes(c, X), numclusters, 1)
-            test(prototypes(c, X, 2), numclusters, 2)
-            test(prototypes(X, assignments(c), :affinitypropagation, 2), numclusters, 2)
+            test(prototypes(c, X), nclusters(c), 1)
+            test(prototypes(c, X, 2), nclusters(c), 2)
+            test(prototypes(X, assignments(c), :affinitypropagation, 2), nclusters(c), 2)
         end
 
         @test_throws ArgumentError prototypes(X, ones(Int, n), :somenotexistingmethod)
@@ -87,6 +104,24 @@ end
             critids2 = criticisms(X, ones(Int, n), k, [[1, 2]], n - 2)
             @test Set(critids2...) == Set(3:n)
             @test collect(critids2...) == critids
+
+            c = kmedoids(pairwise(Euclidean(), X, dims=2), numclusters)
+            critids = criticisms(c, X, k, [Int[], Int[]])
+            test(critids, numclusters, 1)
+
+            c = kmeans(X, numclusters)
+            critids = criticisms(c, X, k, [Int[], Int[]])
+            test(critids, numclusters, 1)
+
+            c = fuzzy_cmeans(X, numclusters, 2)
+            critids = criticisms(c, X, k, [Int[], Int[]])
+            test(critids, numclusters, 1)
+
+            S = -pairwise(Euclidean(), X, dims=2)
+            S = S - diagm(0 => diag(S)) + median(S) * I
+            c = affinityprop(S)
+            critids = criticisms(c, X, k, repeat([Int[]], nclusters(c)))
+            test(critids, nclusters(c), 1)
         end
 
         @testset "k-medoids" begin
@@ -114,10 +149,9 @@ end
             S = -pairwise(Euclidean(), X, dims=2)
             S = S - diagm(0 => diag(S)) + median(S) * I
             c = affinityprop(S)
-            numclusters = nclusters(c)
-            test(criticisms(c, X), numclusters, 1)
-            test(criticisms(c, X, 2), numclusters, 2)
-            test(criticisms(X, assignments(c), :affinitypropagation, 2), numclusters, 2)
+            test(criticisms(c, X), nclusters(c), 1)
+            test(criticisms(c, X, 2), nclusters(c), 2)
+            test(criticisms(X, assignments(c), :affinitypropagation, 2), nclusters(c), 2)
         end
 
         @test_throws ArgumentError criticisms(X, ones(Int, n), :somenotexistingmethod)

@@ -17,6 +17,6 @@ Manifest.toml
 !examples/*/Manifest.toml
 
 examples/cifar10/out
-examples/raw/out
+examples/iris/out
 
 .vscode/

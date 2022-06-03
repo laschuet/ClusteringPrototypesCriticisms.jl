@@ -1,4 +1,4 @@
-module PrototypesCriticisms
+module ClusteringPrototypesCriticisms
 
 using Clustering
 using Distances
