@@ -42,6 +42,14 @@ git-tree-sha1 = "75479b7df4167267d75294d14b58244695beb2ac"
 uuid = "aaaa29a8-35af-508c-8bc3-b662a17a0fe5"
 version = "0.14.2"
 
+[[deps.ClusteringPrototypesCriticisms]]
+deps = ["Clustering", "Distances", "KernelFunctions", "LinearAlgebra", "Statistics"]
+git-tree-sha1 = "c3e6f1e084b8eed2a357c248d5d5b1a85cd76d95"
+repo-rev = "main"
+repo-url = "https://github.com/laschuet/ClusteringPrototypesCriticisms.jl"
+uuid = "f9f9bc0b-3776-4b7a-b5b9-1dc6f8d4879c"
+version = "0.1.0"
+
 [[deps.ColorTypes]]
 deps = ["FixedPointNumbers", "Random"]
 git-tree-sha1 = "b9de8dc6106e09c79f3f776c27c62360d30e5eb8"

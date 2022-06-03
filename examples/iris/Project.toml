@@ -1,5 +1,6 @@
 [deps]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+ClusteringPrototypesCriticisms = "f9f9bc0b-3776-4b7a-b5b9-1dc6f8d4879c"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 KernelFunctions = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
 MLDatasets = "eb30cadb-4394-5ae3-aed4-317e484a6458"
