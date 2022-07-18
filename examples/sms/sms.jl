@@ -92,7 +92,7 @@ end
 
 Run the example.
 """
-function main()
+function main(; genmd=false)
     Random.seed!(42)
     mkpath("out")
 
@@ -131,7 +131,7 @@ function main()
     critids = criticisms(E1, kernel, protoids, c)
     protos = (D[spam][protoids])
     crits = (D[spam][critids])
-    mdtable("out/sms.md", "Spam", protos, crits)
+    genmd && mdtable("sms.md", "Spam", protos, crits)
    
     # No spam
     @info "Find prototypes and criticisms for no spam SMS (MMD-critic method)..."
@@ -141,9 +141,10 @@ function main()
     critids = criticisms(E2, kernel, protoids, c)
     protos = (D[nospam][protoids])
     crits = (D[nospam][critids])
-    mdtable("out/sms.md", "No spam", protos, crits, mode="a")
+    genmd && mdtable("sms.md", "No spam", protos, crits, mode="a")
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
     main()
+    # main(genmd=true)
 end
