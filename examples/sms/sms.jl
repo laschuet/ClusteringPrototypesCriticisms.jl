@@ -74,13 +74,13 @@ function mdtable(filename, title, protos, crits; mode="w")
     open(filename, mode) do io
         write(io, "# $title\n\n")
         write(io, "| Prototypes |\n")
-        write(io, "| ---------- |\n")
+        write(io, "| :--------- |\n")
         for p in protos
             write(io, "| $(p[1:min(128, length(p))])... |\n")
         end
         write(io, "\n")
         write(io, "| Criticisms |\n")
-        write(io, "| ---------- |\n")
+        write(io, "| :--------- |\n")
         for c in crits
             write(io, "| $(c[1:min(128, length(c))])... |\n")
         end
