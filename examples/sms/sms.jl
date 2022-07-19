@@ -88,9 +88,12 @@ function mdtable(filename, title, protos, crits; mode="w")
 end
 
 """
-    main()
+    main(; genmd=false)
 
 Run the example.
+
+# Keyword arguments
+- `genmd`: whether to generate and save the example output as a Markdown table or not.
 """
 function main(; genmd=false)
     Random.seed!(42)
